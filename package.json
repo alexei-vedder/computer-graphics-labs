@@ -1,0 +1,11 @@
+{
+	"name": "computer-graphics-labs",
+	"version": "1.0.0",
+	"scripts": {
+		"serve": "parcel ./src/index.html --port=4321 --open",
+		"build": "parcel build ./src/index.html"
+	},
+	"devDependencies": {
+		"parcel-bundler": "1.12.4"
+	}
+}
