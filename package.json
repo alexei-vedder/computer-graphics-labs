@@ -7,5 +7,9 @@
 	},
 	"devDependencies": {
 		"parcel-bundler": "1.12.4"
+	},
+	"dependencies": {
+		"file-saver": "^2.0.5",
+		"obj-file-parser": "^0.5.1"
 	}
 }
