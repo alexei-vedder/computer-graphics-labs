@@ -48,12 +48,12 @@ export class Paintbrush {
     }
 
     setPixel(x, y, color = this.defaultColor) {
-        const imageData = this.ctx.createImageData(1, 1)
-        imageData.data[0] = color.r;
-        imageData.data[1] = color.g;
-        imageData.data[2] = color.b;
-        imageData.data[3] = color.a;
-        this.ctx.putImageData(imageData, Math.round(x), Math.round(y));
+        const pixel = this.ctx.createImageData(1, 1)
+        pixel.data[0] = color.r;
+        pixel.data[1] = color.g;
+        pixel.data[2] = color.b;
+        pixel.data[3] = color.a;
+        this.ctx.putImageData(pixel, Math.round(x), Math.round(y));
         return this;
     }
 }

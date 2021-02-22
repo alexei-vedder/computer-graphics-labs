@@ -4,7 +4,7 @@ import {
     createGradientImage,
     createRedImage,
     createStarImages,
-    createBunnyImages,
+    createImagesOuttaObj,
     createWhiteImage
 } from "./lab1";
 
@@ -19,4 +19,4 @@ createGradientImage();
 
 createStarImages();
 
-prepareObjFileUploading(createBunnyImages);
+prepareObjFileUploading(createImagesOuttaObj);
