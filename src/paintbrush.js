@@ -27,13 +27,13 @@ export class Paintbrush {
     }
 
     grayscale() {
-        for (let i = 0; i < this.imageData.data.length; i += 4) {
-            const average = (this.imageData.data[i] + this.imageData.data[i + 1] + this.imageData.data[i + 2]) / 3;
-            this.imageData.data[i + 0] = average;
-            this.imageData.data[i + 1] = average;
-            this.imageData.data[i + 2] = average;
+        for (let y = 0; y < this.imageData.height; y++) {
+            for (let x = 0; x < this.imageData.width; x++) {
+                const pixelData = this.ctx.getImageData(x, y, x + 1, y + 1);
+                const averageColorValue = (pixelData.data[0] + pixelData.data[1] + pixelData.data[2]) / 3;
+                this.setPixel(x, y, new Color(averageColorValue, averageColorValue, averageColorValue));
+            }
         }
-        this.ctx.putImageData(this.imageData, 0, 0);
         return this;
     }
 
@@ -48,12 +48,12 @@ export class Paintbrush {
     }
 
     setPixel(x, y, color = this.defaultColor) {
-        const i = (Math.round(y) * 4) * this.imageData.width + Math.round(x) * 4;
-        this.imageData.data[i + 0] = color.r;
-        this.imageData.data[i + 1] = color.g;
-        this.imageData.data[i + 2] = color.b;
-        this.imageData.data[i + 3] = color.a;
-        this.ctx.putImageData(this.imageData, 0, 0);
+        const imageData = this.ctx.createImageData(1, 1)
+        imageData.data[0] = color.r;
+        imageData.data[1] = color.g;
+        imageData.data[2] = color.b;
+        imageData.data[3] = color.a;
+        this.ctx.putImageData(imageData, Math.round(x), Math.round(y));
         return this;
     }
 }

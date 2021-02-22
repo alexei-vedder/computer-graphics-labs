@@ -1,4 +1,4 @@
-import {createImage, drawStar} from "./utils";
+import {createImage, drawStar, prepareObjFileUploading} from "./utils";
 import {LineDrawerV1, LineDrawerV2, LineDrawerV3, LineDrawerV4, Paintbrush} from "./paintbrush";
 import {Color} from "./image";
 
@@ -61,3 +61,14 @@ const starImage4Ctx = starImage4.getContext("2d");
 const lineDrawerV4 = new LineDrawerV4(starImage4Ctx);
 lineDrawerV4.fill();
 drawStar(lineDrawerV4);
+
+prepareObjFileUploading((parsedObjFile) => {
+    const bunnyImage = createImage("Bunny", 1000, 1000);
+    const bunnyImageCtx = bunnyImage.getContext("2d");
+    const lineDrawerV4 = new LineDrawerV4(bunnyImageCtx);
+    lineDrawerV4.fill();
+    parsedObjFile.models[0].vertices.forEach(vertex => {
+        const alpha = 4000, beta = 500;
+        lineDrawerV4.setPixel(alpha * vertex.x + beta, alpha * vertex.y + beta);
+    })
+});
