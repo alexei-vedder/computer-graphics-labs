@@ -150,4 +150,11 @@ export class LineDrawerV4 extends Paintbrush {
         }
         return this;
     }
+
+    drawPolygon(x0, y0, x1, y1, x2, y2, color = this.defaultColor) {
+        this
+            .drawLine(x0, y0, x1, y1, color)
+            .drawLine(x1, y1, x2, y2, color)
+            .drawLine(x2, y2, x0, y0, color);
+    }
 }

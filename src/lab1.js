@@ -1,7 +1,7 @@
 import {Color} from "./image";
 import {createImage} from "./utils";
 import {LineDrawerV1, LineDrawerV2, LineDrawerV3, LineDrawerV4, Paintbrush} from "./paintbrush";
-import {drawStar, drawVertexImage} from "./drawing-fns";
+import {drawPolygonImage, drawStar, drawVertexImage} from "./drawing-fns";
 
 export function createBlackImage() {
     const blackImage = createImage("Black");
@@ -68,4 +68,9 @@ export function createImagesOuttaObj(parsedObjFile, scaling) {
     const vertexImageCtx = vertexImage.getContext("2d");
     const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
     drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, scaling);
+
+    const polygonImage = createImage("Polygon Image", 1000, 1000);
+    const polygonImageCtx = polygonImage.getContext("2d");
+    lineDrawerV4.setNewContext(polygonImageCtx);
+    drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
 }
