@@ -22,13 +22,17 @@ export function createImage(name = "image", width = 200, height = 200) {
 export function prepareObjFileUploading(handleParsedObjFile) {
     const objFileInput = document.getElementById("obj-file-input");
     const objFileSubmit = document.getElementById("obj-file-submit");
+    const objFileAlpha = document.getElementById("obj-file-alpha");
+    const objFileBeta = document.getElementById("obj-file-beta");
     const fileReader = new FileReader();
     fileReader.onload = (fileLoadedEvent) => {
         const fileContent = fileLoadedEvent.target.result;
         const objFile = new OBJFile(fileContent);
         const parsedObjFile = objFile.parse();
-        console.log(parsedObjFile);
-        handleParsedObjFile(parsedObjFile);
+        const alpha = Math.round(objFileAlpha.value);
+        const beta = Math.round(objFileBeta.value);
+        console.log(parsedObjFile, alpha, beta);
+        handleParsedObjFile(parsedObjFile, {alpha, beta});
     };
 
     objFileSubmit.addEventListener("click", () => {

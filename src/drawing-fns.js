@@ -1,5 +1,3 @@
-const alpha = 4000, beta = 500;
-
 export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     lineDrawer.fill();
     for (let i = 0; i <= 12; ++i) {
@@ -9,9 +7,9 @@ export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     }
 }
 
-export function drawVertexImage(lineDrawer, vertices) {
+export function drawVertexImage(lineDrawer, vertices, scaling) {
     lineDrawer.fill();
     vertices.forEach(vertex => {
-        lineDrawer.setPixel(alpha * vertex.x + beta, alpha * vertex.y + beta);
+        lineDrawer.setPixel(scaling.alpha * vertex.x + scaling.beta, scaling.alpha * vertex.y + scaling.beta);
     })
 }

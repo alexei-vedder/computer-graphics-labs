@@ -63,9 +63,9 @@ export function createStarImages() {
     drawStar(lineDrawerV4);
 }
 
-export function createBunnyImages(parsedObjFile) {
-    const vertexBunnyImage = createImage("Bunny", 1000, 1000);
-    const vertexBunnyImageCtx = vertexBunnyImage.getContext("2d");
-    const lineDrawerV4 = new LineDrawerV4(vertexBunnyImageCtx);
-    drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices);
+export function createImagesOuttaObj(parsedObjFile, scaling) {
+    const vertexImage = createImage("Vertex Image", 1000, 1000);
+    const vertexImageCtx = vertexImage.getContext("2d");
+    const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
+    drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, scaling);
 }
