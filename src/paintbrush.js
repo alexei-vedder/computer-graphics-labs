@@ -148,5 +148,6 @@ export class LineDrawerV4 extends Paintbrush {
                 error -= 1;
             }
         }
+        return this;
     }
 }

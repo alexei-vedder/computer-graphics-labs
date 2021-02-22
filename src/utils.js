@@ -19,14 +19,6 @@ export function createImage(name = "image", width = 200, height = 200) {
     return canvas;
 }
 
-export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
-    for (let i = 0; i <= 12; ++i) {
-        const alpha = 2 * 3.14 * i / 13;
-        lineDrawer
-            .drawLine(x0, y0, x0 + length * Math.cos(alpha), y0 + length * Math.sin(alpha));
-    }
-}
-
 export function prepareObjFileUploading(handleParsedObjFile) {
     const objFileInput = document.getElementById("obj-file-input");
     const objFileSubmit = document.getElementById("obj-file-submit");
@@ -35,7 +27,7 @@ export function prepareObjFileUploading(handleParsedObjFile) {
         const fileContent = fileLoadedEvent.target.result;
         const objFile = new OBJFile(fileContent);
         const parsedObjFile = objFile.parse();
-        // console.log(parsedObjFile);
+        console.log(parsedObjFile);
         handleParsedObjFile(parsedObjFile);
     };
 
