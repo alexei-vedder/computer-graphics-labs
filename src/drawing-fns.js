@@ -10,7 +10,7 @@ export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
 export function drawVertexImage(lineDrawer, vertices, scaling) {
     lineDrawer.fill();
     vertices.forEach(vertex => {
-        lineDrawer.setPixel(scaling.alpha * vertex.x + scaling.beta, scaling.alpha * vertex.y + scaling.beta);
+        lineDrawer.setPixel(scaling.alpha * vertex.x + scaling.beta, scaling.alpha * -1 * vertex.y + scaling.beta);
     })
 }
 
@@ -20,7 +20,7 @@ export function drawPolygonImage(lineDrawer, vertices, faces, scaling) {
         const polygonVertices = face.vertices.map(faceVertex => { // находим координаты вершин полигона
             const polygonVertex = {...vertices[faceVertex.vertexIndex - 1]};
             polygonVertex.x = scaling.alpha * polygonVertex.x + scaling.beta;
-            polygonVertex.y = scaling.alpha * polygonVertex.y + scaling.beta;
+            polygonVertex.y = scaling.alpha * -1 * polygonVertex.y + scaling.beta;
             return polygonVertex;
         });
         lineDrawer
