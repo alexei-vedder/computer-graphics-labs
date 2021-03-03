@@ -4,7 +4,8 @@
 	"scripts": {
 		"serve": "parcel ./src/index.html --port=4321 --open",
 		"build": "parcel build ./src/index.html",
-		"deploy": "firebase deploy"
+		"deploy": "firebase deploy",
+		"buildDeploy": "build && deploy"
 	},
 	"devDependencies": {
 		"parcel-bundler": "1.12.4"

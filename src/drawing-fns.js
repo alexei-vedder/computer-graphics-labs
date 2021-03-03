@@ -14,15 +14,19 @@ export function drawVertexImage(lineDrawer, vertices, scaling) {
     })
 }
 
+function findPolygonVertices(allVertices, face, scaling) {
+    return face.vertices.map(faceVertex => { // находим координаты вершин полигона
+        const polygonVertex = {...allVertices[faceVertex.vertexIndex - 1]};
+        polygonVertex.x = scaling.alpha * polygonVertex.x + scaling.beta;
+        polygonVertex.y = scaling.alpha * -1 * polygonVertex.y + scaling.beta;
+        return polygonVertex;
+    });
+}
+
 export function drawPolygonImage(lineDrawer, vertices, faces, scaling) {
     lineDrawer.fill();
     faces.forEach(face => {
-        const polygonVertices = face.vertices.map(faceVertex => { // находим координаты вершин полигона
-            const polygonVertex = {...vertices[faceVertex.vertexIndex - 1]};
-            polygonVertex.x = scaling.alpha * polygonVertex.x + scaling.beta;
-            polygonVertex.y = scaling.alpha * -1 * polygonVertex.y + scaling.beta;
-            return polygonVertex;
-        });
+        const polygonVertices = findPolygonVertices(vertices, face, scaling);
         lineDrawer
             .drawPolygon(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[1].x, polygonVertices[1].y, polygonVertices[2].x, polygonVertices[2].y);
     });

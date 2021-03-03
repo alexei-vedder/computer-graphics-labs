@@ -1,9 +1,9 @@
 import {Color} from "./image";
-import {createImage} from "./utils";
+import {createImage, prepareObjFileUploading} from "./utils";
 import {LineDrawerV1, LineDrawerV2, LineDrawerV3, LineDrawerV4, Paintbrush} from "./paintbrush";
 import {drawPolygonImage, drawStar, drawVertexImage} from "./drawing-fns";
 
-export function createBlackImage() {
+function createBlackImage() {
     const blackImage = createImage("Black");
     const blackImageCtx = blackImage.getContext("2d");
     const paintbrush = new Paintbrush(blackImageCtx);
@@ -12,7 +12,7 @@ export function createBlackImage() {
         .grayscale();
 }
 
-export function createWhiteImage() {
+function createWhiteImage() {
     const whiteImage = createImage("White");
     const whiteImageCtx = whiteImage.getContext("2d");
     const paintbrush = new Paintbrush(whiteImageCtx);
@@ -21,7 +21,7 @@ export function createWhiteImage() {
         .grayscale();
 }
 
-export function createRedImage() {
+function createRedImage() {
     const redImage = createImage("Red");
     const redImageCtx = redImage.getContext("2d");
     const paintbrush = new Paintbrush(redImageCtx);
@@ -29,7 +29,7 @@ export function createRedImage() {
         .fill(new Color(255, 0, 0));
 }
 
-export function createGradientImage() {
+function createGradientImage() {
     const gradientImage = createImage("Gradient");
     const gradientImageCtx = gradientImage.getContext("2d");
     const paintbrush = new Paintbrush(gradientImageCtx);
@@ -37,7 +37,7 @@ export function createGradientImage() {
         .gradient();
 }
 
-export function createStarImages() {
+function createStarImages() {
     const starImage1 = createImage("Star 1");
     const starImage1Ctx = starImage1.getContext("2d");
 
@@ -63,7 +63,7 @@ export function createStarImages() {
     drawStar(lineDrawerV4);
 }
 
-export function createImagesOuttaObj(parsedObjFile, scaling) {
+function createVertexAndPolygonImages(parsedObjFile, scaling) {
     const vertexImage = createImage("Vertex Image", 1000, 1000);
     const vertexImageCtx = vertexImage.getContext("2d");
     const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
@@ -73,4 +73,13 @@ export function createImagesOuttaObj(parsedObjFile, scaling) {
     const polygonImageCtx = polygonImage.getContext("2d");
     lineDrawerV4.setNewContext(polygonImageCtx);
     drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
+}
+
+export function runLab1() {
+    createBlackImage();
+    createWhiteImage();
+    createRedImage();
+    createGradientImage();
+    createStarImages();
+    prepareObjFileUploading(createVertexAndPolygonImages);
 }

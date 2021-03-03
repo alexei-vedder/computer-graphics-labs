@@ -119,6 +119,7 @@ export class LineDrawerV3 extends Paintbrush {
 }
 
 export class LineDrawerV4 extends Paintbrush {
+
     constructor(ctx,
                 defaultBackgroundColor = new Color(0, 0, 0),
                 defaultColor = new Color(255, 255, 255)) {
@@ -156,5 +157,62 @@ export class LineDrawerV4 extends Paintbrush {
             .drawLine(x0, y0, x1, y1, color)
             .drawLine(x1, y1, x2, y2, color)
             .drawLine(x2, y2, x0, y0, color);
+    }
+}
+
+export class PolygonFiller extends Paintbrush {
+
+    constructor(ctx,
+                defaultBackgroundColor = new Color(0, 0, 0),
+                defaultColor = new Color(255, 255, 255)) {
+        super(ctx, defaultBackgroundColor, defaultColor);
+    }
+
+    #getRandomColor() {
+        const getRandomColorComponent = () => Math.floor(Math.random() * 256);
+        return new Color(
+            getRandomColorComponent(),
+            getRandomColorComponent(),
+            getRandomColorComponent()
+        )
+    }
+
+    fillPolygon(x0, y0, x1, y1, x2, y2, color = this.#getRandomColor()) {
+        const constrainingRect = this.#findConstrainingRectangle(x0, y0, x1, y1, x2, y2);
+        for (let y = constrainingRect.yMin; y <= constrainingRect.yMax; y++) {
+            for (let x = constrainingRect.xMin; x <= constrainingRect.xMax; x++) {
+                const bcCoordinates = this.#calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2);
+                if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
+                    this.setPixel(x, y, color);
+                }
+            }
+        }
+        return this;
+    }
+
+    #calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2) {
+        const l0 = ((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2)) / ((x1 - x2) * (y0 - y2) - (y1 - y2) * (x0 - x2))
+        const l1 = ((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0)) / ((x2 - x0) * (y1 - y0) - (y2 - y0) * (x1 - x0))
+        const l2 = ((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1)) / ((x0 - x1) * (y2 - y1) - (y0 - y1) * (x2 - x1))
+
+        const sum = Math.round(l0 + l1 + l2);
+        if (sum !== 1) {
+            throw new Error(`Barycentric coordinates has been calculated wrong. Sum = ${sum}`);
+        }
+
+        return {
+            l0,
+            l1,
+            l2
+        }
+    }
+
+    #findConstrainingRectangle(x0, y0, x1, y1, x2, y2) {
+        return {
+            xMin: Math.max(Math.min(x0, x1, x2), 0),
+            yMin: Math.max(Math.min(y0, y1, y2), 0),
+            xMax: Math.min(Math.max(x0, x1, x2), this.imageData.width),
+            yMax: Math.min(Math.max(y0, y1, y2), this.imageData.height)
+        }
     }
 }

@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -24,11 +26,34 @@
             display: inline-flex;
             flex-direction: column;
             align-items: center;
+            margin-bottom: 30px;
+        }
+
+        #obj-file-submit {
+            margin-bottom: 50px;
         }
 
         .image {
             border: solid 2px;
             margin: 30px
+        }
+
+        .nav-item {
+            cursor: pointer;
+        }
+
+        .form-control {
+            margin-bottom: 20px;
+        }
+
+        .justify-content-center {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            align-items: center;
         }
 
         /* .btn {
@@ -47,16 +72,32 @@
     <title>Computer Graphics Lab</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Vedernikov & Gurlina / Computer Graphics Labs</a>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link">Lab 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">Lab 2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <main id="main-container">
     <section id="image-container"></section>
-    <section>
-        <input id="obj-file-input" type="file"/>
-        <label for="obj-file-alpha">Alpha</label>
-        <input id="obj-file-alpha" type="number" value="4000"/>
-        <label for="obj-file-beta">Beta</label>
-        <input id="obj-file-beta" type="number" value="500"/>
-        <button id="obj-file-submit">Upload</button>
-    </section>
 </main>
 <script src="index.js"></script>
 </body>

@@ -19,12 +19,58 @@ export function createImage(name = "image", width = 200, height = 200) {
     return canvas;
 }
 
+function initObjFileUploadPanel() {
+
+    const objFileUploadPanel = document.getElementById("obj-file-upload-panel");
+
+    if (objFileUploadPanel) {
+        return;
+    }
+
+    document
+        .getElementById("main-container")
+        .insertAdjacentHTML("beforeend", `
+            <section id="obj-file-upload-panel">
+                <label for="obj-file-input">Add your .obj file</label>
+                <input id="obj-file-input" class="form-control" type="file"/>
+                <label for="obj-file-alpha">Alpha (scaling)</label>
+                <input id="obj-file-alpha" class="form-control" type="number" value="4000"/>
+                <label for="obj-file-beta">Beta (displacement)</label>
+                <input id="obj-file-beta" class="form-control" type="number" value="500"/>
+                <button type="button" class="btn btn-primary" id="obj-file-submit">Render</button>
+            </section>
+        `)
+}
+
+export function toggleLoader(enabled) {
+    const loader = document.getElementById("loader")
+    if (enabled) {
+        if (!loader) {
+            document.body.insertAdjacentHTML("beforeend", `
+                <div class="d-flex justify-content-center" id="loader">
+                    <div class="spinner-border" role="status">
+                           <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `)
+        }
+    } else {
+        if (loader) {
+            loader.parentNode.removeChild(loader);
+        }
+    }
+}
+
 export function prepareObjFileUploading(handleParsedObjFile) {
+
+    initObjFileUploadPanel();
+
     const objFileInput = document.getElementById("obj-file-input");
     const objFileSubmit = document.getElementById("obj-file-submit");
     const objFileAlpha = document.getElementById("obj-file-alpha");
     const objFileBeta = document.getElementById("obj-file-beta");
     const fileReader = new FileReader();
+
     fileReader.onload = (fileLoadedEvent) => {
         const fileContent = fileLoadedEvent.target.result;
         const objFile = new OBJFile(fileContent);
@@ -32,7 +78,12 @@ export function prepareObjFileUploading(handleParsedObjFile) {
         const alpha = Math.round(objFileAlpha.value);
         const beta = Math.round(objFileBeta.value);
         console.log(parsedObjFile, alpha, beta);
-        handleParsedObjFile(parsedObjFile, {alpha, beta});
+
+        toggleLoader(true)
+        setTimeout(() => {
+            handleParsedObjFile(parsedObjFile, {alpha, beta});
+            toggleLoader(false);
+        }, 100)
     };
 
     objFileSubmit.addEventListener("click", () => {
