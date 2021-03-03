@@ -24,7 +24,7 @@ function initObjFileUploadPanel() {
     const objFileUploadPanel = document.getElementById("obj-file-upload-panel");
 
     if (objFileUploadPanel) {
-        return;
+        objFileUploadPanel.parentNode.removeChild(objFileUploadPanel);
     }
 
     document
