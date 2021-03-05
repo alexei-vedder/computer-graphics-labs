@@ -31,3 +31,12 @@ export function drawPolygonImage(lineDrawer, vertices, faces, scaling) {
             .drawPolygon(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[1].x, polygonVertices[1].y, polygonVertices[2].x, polygonVertices[2].y);
     });
 }
+
+export function drawFilledPolygonImage(polygonFiller, vertices, faces, scaling) {
+    polygonFiller.fill();
+    faces.forEach(face => {
+        const polygonVertices = findPolygonVertices(vertices, face, scaling);
+        polygonFiller
+            .fillPolygon(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[1].x, polygonVertices[1].y, polygonVertices[2].x, polygonVertices[2].y);
+    });
+}

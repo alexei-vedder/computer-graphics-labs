@@ -1,5 +1,6 @@
-import {createImage} from "./utils";
+import {createImage, prepareObjFileUploading} from "./utils";
 import {PolygonFiller} from "./paintbrush";
+import {drawFilledPolygonImage} from "./drawing-fns";
 
 function createTriangleImage() {
     const justTriangle = createImage("Triangles", 500, 500);
@@ -14,6 +15,14 @@ function createTriangleImage() {
         .fillPolygon(300, 150, 450, 220, 300, 300)
 }
 
+function createFilledPolygonImage(parsedObjFile, scaling) {
+    const vertexImage = createImage("Filled Polygon Image", 1000, 1000);
+    const vertexImageCtx = vertexImage.getContext("2d");
+    const polygonFiller = new PolygonFiller(vertexImageCtx);
+    drawFilledPolygonImage(polygonFiller, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
+}
+
 export function runLab2() {
     createTriangleImage();
+    prepareObjFileUploading(createFilledPolygonImage);
 }
