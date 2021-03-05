@@ -1,5 +1,6 @@
 import {saveAs} from "file-saver";
 import OBJFile from "obj-file-parser";
+import {round} from "mathjs";
 
 export function createImage(name = "image", width = 200, height = 200) {
     const canvas = document.createElement("canvas");
@@ -75,8 +76,8 @@ export function prepareObjFileUploading(handleParsedObjFile) {
         const fileContent = fileLoadedEvent.target.result;
         const objFile = new OBJFile(fileContent);
         const parsedObjFile = objFile.parse();
-        const alpha = Math.round(objFileAlpha.value);
-        const beta = Math.round(objFileBeta.value);
+        const alpha = round(objFileAlpha.value);
+        const beta = round(objFileBeta.value);
         console.log(parsedObjFile, alpha, beta);
 
         toggleLoader(true)

@@ -1,4 +1,5 @@
 import {Color} from "./color";
+import {min, max, floor, ceil, round, abs, random} from "mathjs";
 
 export class Paintbrush {
 
@@ -53,7 +54,7 @@ export class Paintbrush {
         pixel.data[1] = color.g;
         pixel.data[2] = color.b;
         pixel.data[3] = color.a;
-        this.ctx.putImageData(pixel, Math.round(x), Math.round(y));
+        this.ctx.putImageData(pixel, round(x), round(y));
         return this;
     }
 }
@@ -100,7 +101,7 @@ export class LineDrawerV3 extends Paintbrush {
     }
 
     drawLine(x0, y0, x1, y1, color = this.defaultColor) {
-        const steep = Math.abs(x0 - x1) < Math.abs(y0 - y1);
+        const steep = abs(x0 - x1) < abs(y0 - y1);
         if (steep) {
             [x0, y0] = [y0, x0];
             [x1, y1] = [y1, x1];
@@ -127,7 +128,7 @@ export class LineDrawerV4 extends Paintbrush {
     }
 
     drawLine(x0, y0, x1, y1, color = this.defaultColor) {
-        const steep = Math.abs(x0 - x1) < Math.abs(y0 - y1);
+        const steep = abs(x0 - x1) < abs(y0 - y1);
         if (steep) {
             [x0, y0] = [y0, x0];
             [x1, y1] = [y1, x1];
@@ -138,7 +139,7 @@ export class LineDrawerV4 extends Paintbrush {
         }
         const dx = x1 - x0;
         const dy = y1 - y0;
-        const dError = Math.abs(dy / dx);
+        const dError = abs(dy / dx);
         let error = 0;
         let y = y0;
         for (let x = x0; x <= x1; ++x) {
@@ -170,8 +171,8 @@ export class PolygonFiller extends Paintbrush {
 
     fillPolygon(x0, y0, x1, y1, x2, y2, color = this.#getRandomColor()) {
         const constrainingRect = this.#findConstrainingRectangle(x0, y0, x1, y1, x2, y2);
-        for (let y = Math.floor(constrainingRect.yMin); y <= Math.ceil(constrainingRect.yMax); y++) {
-            for (let x = Math.floor(constrainingRect.xMin); x <= Math.ceil(constrainingRect.xMax); x++) {
+        for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {
+            for (let x = floor(constrainingRect.xMin); x <= ceil(constrainingRect.xMax); x++) {
                 const bcCoordinates = this.#calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2);
                 if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
                     this.setPixel(x, y, color);
@@ -182,7 +183,7 @@ export class PolygonFiller extends Paintbrush {
     }
 
     #getRandomColor() {
-        const getRandomColorComponent = () => Math.floor(Math.random() * 256);
+        const getRandomColorComponent = () => random(256);
         return new Color(
             getRandomColorComponent(),
             getRandomColorComponent(),
@@ -195,7 +196,7 @@ export class PolygonFiller extends Paintbrush {
         const l1 = ((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0)) / ((x2 - x0) * (y1 - y0) - (y2 - y0) * (x1 - x0))
         const l2 = ((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1)) / ((x0 - x1) * (y2 - y1) - (y0 - y1) * (x2 - x1))
 
-        const sum = Math.round(l0 + l1 + l2);
+        const sum = round(l0 + l1 + l2);
         if (sum !== 1) {
             throw new Error(`Barycentric coordinates have been calculated wrong. Sum = ${sum}`);
         }
@@ -209,10 +210,10 @@ export class PolygonFiller extends Paintbrush {
 
     #findConstrainingRectangle(x0, y0, x1, y1, x2, y2) {
         return {
-            xMin: Math.max(Math.min(x0, x1, x2), 0),
-            yMin: Math.max(Math.min(y0, y1, y2), 0),
-            xMax: Math.min(Math.max(x0, x1, x2), this.imageData.width),
-            yMax: Math.min(Math.max(y0, y1, y2), this.imageData.height)
+            xMin: max(min(x0, x1, x2), 0),
+            yMin: max(min(y0, y1, y2), 0),
+            xMax: min(max(x0, x1, x2), this.imageData.width),
+            yMax: min(max(y0, y1, y2), this.imageData.height)
         }
     }
 }

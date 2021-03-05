@@ -1,6 +1,6 @@
 import {createImage, prepareObjFileUploading} from "./utils";
 import {PolygonFiller} from "./paintbrush";
-import {drawFilledPolygonImage} from "./drawing-fns";
+import {drawFilledPolygonImage, drawLightSensitiveFilledPolygonImage} from "./drawing-fns";
 
 function createTriangleImage() {
     const justTriangle = createImage("Triangles", 500, 500);
@@ -16,13 +16,20 @@ function createTriangleImage() {
 }
 
 function createFilledPolygonImage(parsedObjFile, scaling) {
-    const vertexImage = createImage("Filled Polygon Image", 1000, 1000);
-    const vertexImageCtx = vertexImage.getContext("2d");
-    const polygonFiller = new PolygonFiller(vertexImageCtx);
+    const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
+    const polygonImageCtx = polygonImage.getContext("2d");
+    const polygonFiller = new PolygonFiller(polygonImageCtx);
     drawFilledPolygonImage(polygonFiller, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
+}
+
+function createLightSensitiveFilledPolygonImage(parsedObjFile, scaling) {
+    const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
+    const polygonImageCtx = polygonImage.getContext("2d");
+    const polygonFiller = new PolygonFiller(polygonImageCtx);
+    drawLightSensitiveFilledPolygonImage(polygonFiller, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
 }
 
 export function runLab2() {
     createTriangleImage();
-    prepareObjFileUploading(createFilledPolygonImage);
+    prepareObjFileUploading(createLightSensitiveFilledPolygonImage);
 }
