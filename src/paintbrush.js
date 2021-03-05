@@ -1,4 +1,4 @@
-import {Color} from "./image";
+import {Color} from "./color";
 
 export class Paintbrush {
 
@@ -168,19 +168,10 @@ export class PolygonFiller extends Paintbrush {
         super(ctx, defaultBackgroundColor, defaultColor);
     }
 
-    #getRandomColor() {
-        const getRandomColorComponent = () => Math.floor(Math.random() * 256);
-        return new Color(
-            getRandomColorComponent(),
-            getRandomColorComponent(),
-            getRandomColorComponent()
-        )
-    }
-
     fillPolygon(x0, y0, x1, y1, x2, y2, color = this.#getRandomColor()) {
         const constrainingRect = this.#findConstrainingRectangle(x0, y0, x1, y1, x2, y2);
-        for (let y = constrainingRect.yMin; y <= constrainingRect.yMax; y++) {
-            for (let x = constrainingRect.xMin; x <= constrainingRect.xMax; x++) {
+        for (let y = Math.floor(constrainingRect.yMin); y <= Math.ceil(constrainingRect.yMax); y++) {
+            for (let x = Math.floor(constrainingRect.xMin); x <= Math.ceil(constrainingRect.xMax); x++) {
                 const bcCoordinates = this.#calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2);
                 if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
                     this.setPixel(x, y, color);
@@ -190,6 +181,15 @@ export class PolygonFiller extends Paintbrush {
         return this;
     }
 
+    #getRandomColor() {
+        const getRandomColorComponent = () => Math.floor(Math.random() * 256);
+        return new Color(
+            getRandomColorComponent(),
+            getRandomColorComponent(),
+            getRandomColorComponent()
+        )
+    }
+
     #calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2) {
         const l0 = ((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2)) / ((x1 - x2) * (y0 - y2) - (y1 - y2) * (x0 - x2))
         const l1 = ((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0)) / ((x2 - x0) * (y1 - y0) - (y2 - y0) * (x1 - x0))
@@ -197,7 +197,7 @@ export class PolygonFiller extends Paintbrush {
 
         const sum = Math.round(l0 + l1 + l2);
         if (sum !== 1) {
-            throw new Error(`Barycentric coordinates has been calculated wrong. Sum = ${sum}`);
+            throw new Error(`Barycentric coordinates have been calculated wrong. Sum = ${sum}`);
         }
 
         return {

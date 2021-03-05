@@ -1,4 +1,4 @@
-import {Color} from "./image";
+import {Color} from "./color";
 import {createImage, prepareObjFileUploading} from "./utils";
 import {LineDrawerV1, LineDrawerV2, LineDrawerV3, LineDrawerV4, Paintbrush} from "./paintbrush";
 import {drawPolygonImage, drawStar, drawVertexImage} from "./drawing-fns";
