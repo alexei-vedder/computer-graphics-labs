@@ -1,20 +1,15 @@
+/**
+ * In order to use async/await without "regeneratorRuntime is not defined" error
+ * See https://flaviocopes.com/parcel-regeneratorruntime-not-defined/
+ */
+import "regenerator-runtime/runtime";
+
 import {runLab1} from "./lab1";
 import {runLab2} from "./lab2";
-import {toggleLoader} from "./utils";
+import {switchTabs, toggleLoader} from "./utils";
 
-function switchTabs(tab) {
-    if (tab.classList.contains("active")) {
-        return;
-    }
-    tab.classList.add("active");
-    tab.parentElement.parentElement.childNodes.forEach((childNode) => {
-        if (childNode.hasChildNodes() && childNode?.lastElementChild !== tab) {
-            childNode.lastElementChild.classList.remove("active");
-        }
-    });
-
-    document.getElementById("image-container").innerHTML = "";
-    switch (tab.innerText) {
+function onTabClick() {
+    switch (this.node.childNodes[1].innerText) {
         case "Lab 1": {
             toggleLoader(true)
             setTimeout(() => {
@@ -39,11 +34,12 @@ console.log(navbarList.childNodes);
 navbarList.childNodes.forEach(node => {
     if (node.nodeName === "LI") {
         node.onclick = () => {
-            switchTabs(node.childNodes[1]);
+            switchTabs(node.childNodes[1], onTabClick.bind({node}));
         }
 
+        // setting default tab
         if (node.childNodes[1].innerText === "Lab 2") {
-            switchTabs(node.childNodes[1]);
+            switchTabs(node.childNodes[1], onTabClick.bind({node}));
         }
     }
 })

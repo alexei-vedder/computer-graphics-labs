@@ -11,9 +11,9 @@ export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
 
 export function drawVertexImage(lineDrawer, vertices, scaling) {
     lineDrawer.fill();
-    vertices.forEach(vertex => {
+    for (let vertex of vertices) {
         lineDrawer.setPixel(scaling.alpha * vertex.x + scaling.beta, scaling.alpha * -1 * vertex.y + scaling.beta);
-    })
+    }
 }
 
 function findPolygonVertices(allVertices, face, scaling) {
@@ -28,11 +28,11 @@ function findPolygonVertices(allVertices, face, scaling) {
 
 export function drawPolygonImage(lineDrawer, vertices, faces, scaling) {
     lineDrawer.fill();
-    faces.forEach(face => {
+    for (let face of faces) {
         const polygonVertices = findPolygonVertices(vertices, face, scaling);
         lineDrawer
             .drawPolygon(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[1].x, polygonVertices[1].y, polygonVertices[2].x, polygonVertices[2].y);
-    });
+    }
 }
 
 export function drawFilledPolygonImage(polygonFiller, vertices, faces, scaling) {

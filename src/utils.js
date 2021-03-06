@@ -62,6 +62,21 @@ export function toggleLoader(enabled) {
     }
 }
 
+export function switchTabs(tab, callback) {
+    if (tab.classList.contains("active")) {
+        return;
+    }
+    tab.classList.add("active");
+    tab.parentElement.parentElement.childNodes.forEach((childNode) => {
+        if (childNode.hasChildNodes() && childNode?.lastElementChild !== tab) {
+            childNode.lastElementChild.classList.remove("active");
+        }
+    });
+
+    document.getElementById("image-container").innerHTML = "";
+    callback();
+}
+
 export function prepareObjFileUploading(handleParsedObjFile) {
 
     initObjFileUploadPanel();

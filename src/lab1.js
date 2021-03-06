@@ -63,15 +63,17 @@ function createStarImages() {
     drawStar(lineDrawerV4);
 }
 
-function createVertexAndPolygonImages(parsedObjFile, scaling) {
+async function createVertexImage(parsedObjFile, scaling) {
     const vertexImage = createImage("Vertex Image", 1000, 1000);
     const vertexImageCtx = vertexImage.getContext("2d");
     const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
     drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, scaling);
+}
 
+async function createPolygonImage(parsedObjFile, scaling) {
     const polygonImage = createImage("Polygon Image", 1000, 1000);
     const polygonImageCtx = polygonImage.getContext("2d");
-    lineDrawerV4.setNewContext(polygonImageCtx);
+    const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
     drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
 }
 
@@ -81,5 +83,8 @@ export function runLab1() {
     createRedImage();
     createGradientImage();
     createStarImages();
-    prepareObjFileUploading(createVertexAndPolygonImages);
+    prepareObjFileUploading(async (parsedObjFile, scaling) => {
+        await createVertexImage(parsedObjFile, scaling);
+        await createPolygonImage(parsedObjFile, scaling);
+    });
 }
