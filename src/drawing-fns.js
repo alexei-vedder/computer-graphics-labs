@@ -1,4 +1,5 @@
-import {cos, cross, dot, sin} from "mathjs";
+import {cos, cross, dot, sin, abs, divide, dotDivide, sqrt, square} from "mathjs";
+import {Color} from "./color";
 
 export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     lineDrawer.fill();
@@ -48,15 +49,23 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, fa
     polygonFiller.fill();
     faces.forEach(face => {
         const polygonVertices = findPolygonVertices(vertices, face, scaling);
-        const normal = cross(
+        let normal = cross(
             [polygonVertices[1].x - polygonVertices[0].x, polygonVertices[1].y - polygonVertices[0].y, polygonVertices[1].z - polygonVertices[0].z],
             [polygonVertices[1].x - polygonVertices[2].x, polygonVertices[1].y - polygonVertices[2].y, polygonVertices[1].z - polygonVertices[2].z]
         );
+        normal = divide(normal, sqrt(square(normal[0]) + square(normal[1]) + square(normal[2])));
         const cosineOfAngleOfIncidence = dot(normal, lightDirection);
         if (cosineOfAngleOfIncidence < 0) {
             polygonFiller
-                .fillPolygon(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[1].x, polygonVertices[1].y, polygonVertices[2].x, polygonVertices[2].y);
-
+                .fillPolygon(
+                    polygonVertices[0].x,
+                    polygonVertices[0].y,
+                    polygonVertices[1].x,
+                    polygonVertices[1].y,
+                    polygonVertices[2].x,
+                    polygonVertices[2].y,
+                    new Color(255 * abs(cosineOfAngleOfIncidence), 255 * abs(cosineOfAngleOfIncidence), 0)
+                );
         }
     })
 }

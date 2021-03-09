@@ -35,7 +35,7 @@ function initObjFileUploadPanel() {
                 <label for="obj-file-input">Add your .obj file</label>
                 <input id="obj-file-input" class="form-control" type="file"/>
                 <label for="obj-file-alpha">Alpha (scaling)</label>
-                <input id="obj-file-alpha" class="form-control" type="number" value="4000"/>
+                <input id="obj-file-alpha" class="form-control" type="number" value="20"/>
                 <label for="obj-file-beta">Beta (displacement)</label>
                 <input id="obj-file-beta" class="form-control" type="number" value="500"/>
                 <button type="button" class="btn btn-primary" id="obj-file-submit">Render</button>

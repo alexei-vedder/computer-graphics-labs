@@ -169,6 +169,13 @@ export class PolygonFiller extends Paintbrush {
         super(ctx, defaultBackgroundColor, defaultColor);
     }
 
+    /** a bit optimized version*/
+    fill(color = this.defaultBackgroundColor) {
+        this.ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`
+        this.ctx.fillRect(0, 0, this.imageData.width, this.imageData.height)
+        return this;
+    }
+
     fillPolygon(x0, y0, x1, y1, x2, y2, color = this.#getRandomColor()) {
         const constrainingRect = this.#findConstrainingRectangle(x0, y0, x1, y1, x2, y2);
         for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {
@@ -192,13 +199,13 @@ export class PolygonFiller extends Paintbrush {
     }
 
     #calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2) {
-        const l0 = ((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2)) / ((x1 - x2) * (y0 - y2) - (y1 - y2) * (x0 - x2))
-        const l1 = ((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0)) / ((x2 - x0) * (y1 - y0) - (y2 - y0) * (x1 - x0))
-        const l2 = ((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1)) / ((x0 - x1) * (y2 - y1) - (y0 - y1) * (x2 - x1))
+        const l0 = ((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2)) / ((x1 - x2) * (y0 - y2) - (y1 - y2) * (x0 - x2));
+        const l1 = ((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0)) / ((x2 - x0) * (y1 - y0) - (y2 - y0) * (x1 - x0));
+        const l2 = ((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1)) / ((x0 - x1) * (y2 - y1) - (y0 - y1) * (x2 - x1));
 
         const sum = round(l0 + l1 + l2);
         if (sum !== 1) {
-            throw new Error(`Barycentric coordinates have been calculated wrong. Sum = ${sum}`);
+            console.warn(`Barycentric coordinates have been calculated wrong. Sum = ${sum}`) // throw new Error(`Barycentric coordinates have been calculated wrong. Sum = ${sum}`);
         }
 
         return {
