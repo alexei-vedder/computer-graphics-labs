@@ -69,8 +69,8 @@ async function createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, 
 export function runLab2() {
     createTriangleImage();
     prepareObjFileUploading(async (parsedObjFile, scaling, lightDirection) => {
-        // await createFilledPolygonImage(parsedObjFile, scaling);
+        await createFilledPolygonImage(parsedObjFile, scaling);
         await createLightSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection);
-        await createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection)
+        await createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection);
     });
 }
