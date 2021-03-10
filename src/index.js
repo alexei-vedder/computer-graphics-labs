@@ -30,7 +30,6 @@ function onTabClick() {
 }
 
 const navbarList = document.getElementById("navbarSupportedContent").firstElementChild;
-console.log(navbarList.childNodes);
 navbarList.childNodes.forEach(node => {
     if (node.nodeName === "LI") {
         node.onclick = () => {

@@ -57,6 +57,15 @@ export class Paintbrush {
         this.ctx.putImageData(pixel, round(x), round(y));
         return this;
     }
+
+    static getRandomColor() {
+        const getRandomColorComponent = () => random(256);
+        return new Color(
+            getRandomColorComponent(),
+            getRandomColorComponent(),
+            getRandomColorComponent()
+        )
+    }
 }
 
 export class LineDrawerV1 extends Paintbrush {
@@ -176,11 +185,11 @@ export class PolygonFiller extends Paintbrush {
         return this;
     }
 
-    fillPolygon(x0, y0, x1, y1, x2, y2, color = this.#getRandomColor()) {
-        const constrainingRect = this.#findConstrainingRectangle(x0, y0, x1, y1, x2, y2);
+    fillPolygon(p0, p1, p2, color = Paintbrush.getRandomColor()) {
+        const constrainingRect = this._findConstrainingRectangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
         for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {
             for (let x = floor(constrainingRect.xMin); x <= ceil(constrainingRect.xMax); x++) {
-                const bcCoordinates = this.#calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2);
+                const bcCoordinates = PolygonFiller.calcBarycentricCoordinates(x, y, p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
                 if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
                     this.setPixel(x, y, color);
                 }
@@ -189,16 +198,7 @@ export class PolygonFiller extends Paintbrush {
         return this;
     }
 
-    #getRandomColor() {
-        const getRandomColorComponent = () => random(256);
-        return new Color(
-            getRandomColorComponent(),
-            getRandomColorComponent(),
-            getRandomColorComponent()
-        )
-    }
-
-    #calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2) {
+    static calcBarycentricCoordinates(x, y, x0, y0, x1, y1, x2, y2) {
         const l0 = ((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2)) / ((x1 - x2) * (y0 - y2) - (y1 - y2) * (x0 - x2));
         const l1 = ((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0)) / ((x2 - x0) * (y1 - y0) - (y2 - y0) * (x1 - x0));
         const l2 = ((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1)) / ((x0 - x1) * (y2 - y1) - (y0 - y1) * (x2 - x1));
@@ -215,12 +215,42 @@ export class PolygonFiller extends Paintbrush {
         }
     }
 
-    #findConstrainingRectangle(x0, y0, x1, y1, x2, y2) {
+    /** @internal */
+    _findConstrainingRectangle(x0, y0, x1, y1, x2, y2) {
         return {
             xMin: max(min(x0, x1, x2), 0),
             yMin: max(min(y0, y1, y2), 0),
             xMax: min(max(x0, x1, x2), this.imageData.width),
             yMax: min(max(y0, y1, y2), this.imageData.height)
         }
+    }
+}
+
+export class ZBufferedPolygonFiller extends PolygonFiller {
+    constructor(ctx,
+                defaultBackgroundColor = new Color(0, 0, 0),
+                defaultColor = new Color(255, 255, 255)) {
+        super(ctx, defaultBackgroundColor, defaultColor);
+        this.zBuffer = new Array(this.imageData.width)
+            .fill(new Array(this.imageData.height).fill(Infinity));
+    }
+
+    fillPolygon(p0, p1, p2, color = Paintbrush.getRandomColor(), initZ) {
+        const constrainingRect = this._findConstrainingRectangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
+        for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {
+            for (let x = floor(constrainingRect.xMin); x <= ceil(constrainingRect.xMax); x++) {
+                const bcCoordinates = PolygonFiller.calcBarycentricCoordinates(x, y, p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
+                if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
+                    const z = bcCoordinates.l0 * p0.z + bcCoordinates.l1 * p1.z + bcCoordinates.l2 * p2.z;
+                   // const z = bcCoordinates.l0 * initZ.z0 + bcCoordinates.l1 * initZ.z1 + bcCoordinates.l2 * initZ.z2;
+                    console.log(x, y);
+                    if (z < this.zBuffer[x][y]) {
+                        this.setPixel(x, y, color);
+                        this.zBuffer[x][y] = z;
+                    }
+                }
+            }
+        }
+        return this;
     }
 }
