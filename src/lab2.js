@@ -1,7 +1,8 @@
 import {createImage, prepareObjFileUploading} from "./utils";
-import {PolygonFiller, ZBufferedPolygonFiller} from "./paintbrush";
 import {drawFilledPolygonImage, drawLightSensitiveFilledPolygonImage} from "./drawing-fns";
-import {Vertex} from "./vertex";
+import {Vertex} from "./models/vertex";
+import {PolygonFiller} from "./tool-classes/polygon-filler";
+import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
 
 function createTriangleImage() {
     const justTriangle = createImage("Triangles", 500, 500);

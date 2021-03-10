@@ -1,6 +1,6 @@
 import {cos, cross, dot, sin, abs, divide, sqrt, square} from "mathjs";
-import {Color} from "./color";
-import {Vertex} from "./vertex";
+import {Color} from "./models/color";
+import {Vertex} from "./models/vertex";
 
 export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     lineDrawer.fill();
@@ -68,12 +68,7 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, fa
                     new Vertex(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[0].z),
                     new Vertex(polygonVertices[1].x, polygonVertices[1].y, polygonVertices[1].z),
                     new Vertex(polygonVertices[2].x, polygonVertices[2].y, polygonVertices[2].z),
-                    new Color(255 * abs(cosineOfAngleOfIncidence), 255 * abs(cosineOfAngleOfIncidence), 0),
-                    {
-                        z0: (polygonVertices[0].z - scaling.beta) / scaling.alpha,
-                        z1: (polygonVertices[1].z - scaling.beta) / scaling.alpha,
-                        z2: (polygonVertices[2].z - scaling.beta) / scaling.alpha,
-                    }
+                    new Color(255 * abs(cosineOfAngleOfIncidence), 255 * abs(cosineOfAngleOfIncidence), 0)
                 );
         }
     })

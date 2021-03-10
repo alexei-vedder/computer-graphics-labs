@@ -1,7 +1,11 @@
-import {Color} from "./color";
+import {Color} from "./models/color";
 import {createImage, prepareObjFileUploading} from "./utils";
-import {LineDrawerV1, LineDrawerV2, LineDrawerV3, LineDrawerV4, Paintbrush} from "./paintbrush";
 import {drawPolygonImage, drawStar, drawVertexImage} from "./drawing-fns";
+import {Paintbrush} from "./tool-classes/paintbrush";
+import {LineDrawerV1} from "./tool-classes/line-drawer-v1";
+import {LineDrawerV2} from "./tool-classes/line-drawer-v2";
+import {LineDrawerV3} from "./tool-classes/line-drawer-v3";
+import {LineDrawerV4} from "./tool-classes/line-drawer-v4";
 
 function createBlackImage() {
     const blackImage = createImage("Black");
