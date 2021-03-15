@@ -13,6 +13,7 @@ export class ZBufferedPolygonFiller extends PolygonFiller {
             .map(() => new Array(this.imageData.height).fill(Infinity))
     }
 
+    /** @override */
     fillPolygon(p0, p1, p2, color = Paintbrush.getRandomColor()) {
         const constrainingRect = this._findConstrainingRectangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
         for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {

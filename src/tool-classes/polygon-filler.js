@@ -10,7 +10,9 @@ export class PolygonFiller extends Paintbrush {
         super(ctx, defaultBackgroundColor, defaultColor);
     }
 
-    /** a bit optimized version*/
+    /** a bit optimized version
+     * @override
+     */
     fill(color = this.defaultBackgroundColor) {
         this.ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`
         this.ctx.fillRect(0, 0, this.imageData.width, this.imageData.height)

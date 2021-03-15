@@ -39,10 +39,13 @@ export class Paintbrush {
     }
 
     gradient() {
+        const color = Paintbrush.getRandomColor();
+        color.a = 0;
+        const alphaStep = 255 / this.imageData.height;
         for (let y = 0; y < this.imageData.height; y++) {
+            color.a += alphaStep;
             for (let x = 0; x < this.imageData.width; x++) {
-                const value = (x + y) % this.imageData.width;
-                this.setPixel(x, y, {r: value, g: value, b: value, a: 255})
+                this.setPixel(x, y, color);
             }
         }
         return this;

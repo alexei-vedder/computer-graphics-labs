@@ -2,6 +2,10 @@ import {Paintbrush} from "./paintbrush";
 import {Color} from "../models/color";
 import {abs} from "mathjs";
 
+/**
+ * Uses Bresenham's line algorithm
+ * Use this class as final tool for drawing lines
+ */
 export class LineDrawerV4 extends Paintbrush {
 
     constructor(ctx,
