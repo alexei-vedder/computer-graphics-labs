@@ -19,8 +19,8 @@ export class BasicCoordTransformer extends CoordTransformer {
 
     transform(vertex) {
         vertex.setTransformedCoordinates(
-            this.config.scaling * vertex.x + this.config.displacement.x,
-            this.config.scaling * vertex.y + this.config.displacement.y,
+            this.config.scaling * vertex.x + this.config.displacementX,
+            this.config.scaling * vertex.y + this.config.displacementY,
             this.config.scaling * vertex.z
         );
         return vertex;
@@ -35,8 +35,8 @@ export class ProjectiveCoordTransformer extends CoordTransformer {
 
     transform(vertex) {
         const intrinsic = [
-            [this.config.scaling, 0, this.config.displacement.x],
-            [0, this.config.scaling, this.config.displacement.y],
+            [this.config.scaling, 0, this.config.displacementX],
+            [0, this.config.scaling, this.config.displacementY],
             [0, 0, 1]
         ];
 
@@ -48,9 +48,9 @@ export class ProjectiveCoordTransformer extends CoordTransformer {
                     [vertex.y],
                     [vertex.z]
                 ], [
-                    [0.005],
-                    [0.05],
-                    [0.2]
+                    [this.config.shiftX],
+                    [this.config.shiftY],
+                    [this.config.shiftZ]
                 ]
             )
         )).flat();
@@ -61,8 +61,8 @@ export class ProjectiveCoordTransformer extends CoordTransformer {
 
         /** Another way to calculate new coordinates
 
-         const u = this.config.scaling * (vertex.x + 0.005) / (vertex.z + 0.2) + this.config.displacement.x,
-         v = this.config.scaling * (vertex.y + 0.045) / (vertex.z + 0.2) + this.config.displacement.y,
+         const u = this.config.scaling * (vertex.x + 0.005) / (vertex.z + 0.2) + this.config.displacementX,
+         v = this.config.scaling * (vertex.y + 0.045) / (vertex.z + 0.2) + this.config.displacementY,
          w = 1;
          vertex.setTransformedCoordinates(u, v, w);
 

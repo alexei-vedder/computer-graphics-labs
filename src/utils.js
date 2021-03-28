@@ -21,7 +21,7 @@ export function createImage(name = "image", width = 200, height = 200) {
     return canvas;
 }
 
-function initObjFileUploadPanel() {
+function initObjFileUploadPanel(controls) {
 
     const objFileUploadPanel = document.getElementById("obj-file-upload-panel");
 
@@ -29,18 +29,17 @@ function initObjFileUploadPanel() {
         objFileUploadPanel.parentNode.removeChild(objFileUploadPanel);
     }
 
+    const controlsTemplates =
+        controls.map(control => `<label for="${control.id}">${control.label}</label>
+                <input id="${control.id}" class="form-control" type="${control.type}" value="${control.value}"/>`);
+
     document
         .getElementById("main-container")
         .insertAdjacentHTML("beforeend", `
             <section id="obj-file-upload-panel">
                 <label for="obj-file-input">Add your .obj file</label>
                 <input id="obj-file-input" class="form-control" type="file"/>
-                <label for="obj-file-scaling">Scaling</label>
-                <input id="obj-file-scaling" class="form-control" type="number" value="20"/>
-                <label for="obj-file-displacement-x">Displacement (x)</label>
-                <input id="obj-file-displacement-x" class="form-control" type="number" value="500"/>
-                <label for="obj-file-displacement-y">Displacement (y)</label>
-                <input id="obj-file-displacement-y" class="form-control" type="number" value="500"/>
+                ${controlsTemplates.join("")}
                 <button type="button" class="btn btn-primary" id="obj-file-submit">Render</button>
             </section>
         `)
@@ -82,40 +81,66 @@ export function switchTabs(tab, callback) {
     callback();
 }
 
-export function prepareObjFileUploading(handleParsedObjFile) {
+export function prepareObjFileUploading(handleParsedObjFile, extraControls = []) {
 
-    initObjFileUploadPanel();
+    const controls = [
+        {
+            id: "scaling",
+            type: "number",
+            value: 1000,
+            label: "Scaling",
+            handle: (value) => ({
+                scaling: round(value)
+            })
+        }, {
+            id: "displacement-x",
+            type: "number",
+            value: 500,
+            label: "Displacement (x)",
+            handle: (value) => ({
+                displacementX: round(value)
+            })
+        }, {
+            id: "displacement-y",
+            type: "number",
+            value: 500,
+            label: "Displacement (y)",
+            handle: (value) => ({
+                displacementY: round(value)
+            })
+        }
+    ].concat(extraControls);
+
+    initObjFileUploadPanel(controls);
 
     const objFileInput = document.getElementById("obj-file-input");
     const objFileSubmit = document.getElementById("obj-file-submit");
-    const objFileScaling = document.getElementById("obj-file-scaling");
-    const objFileDisplacementX = document.getElementById("obj-file-displacement-x");
-    const objFileDisplacementY = document.getElementById("obj-file-displacement-y");
     const fileReader = new FileReader();
+
+    objFileSubmit.addEventListener("click", () => {
+        const uploadedFile = objFileInput.files[0];
+        if (uploadedFile) {
+            fileReader.readAsText(uploadedFile, "UTF-8");
+        }
+    });
 
     fileReader.onload = (fileLoadedEvent) => {
         const fileContent = fileLoadedEvent.target.result;
-        const objFile = new OBJFile(fileContent);
-        const parsedObjFile = objFile.parse();
-        const scaling = round(objFileScaling.value);
-        const displacement = {
-            x: round(objFileDisplacementX.value),
-            y: round(objFileDisplacementY.value)
-        }
+        const parsedObjFile = new OBJFile(fileContent).parse();
 
+        const config = controls.reduce((config, control) => {
+            const controlValue = control.handle(document.getElementById(control.id).value);
+            return Object.assign(config, controlValue)
+        }, {});
 
         toggleLoader(true)
         setTimeout(() => {
-            handleParsedObjFile(parsedObjFile, {scaling, displacement})
+            handleParsedObjFile(parsedObjFile, config)
                 .then(() => {
                     toggleLoader(false);
                 });
         }, 100);
     };
-
-    objFileSubmit.addEventListener("click", () => {
-        fileReader.readAsText(objFileInput.files[0], "UTF-8");
-    });
 }
 
 export function initTabs(defaultTabIndex = 0) {
