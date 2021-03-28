@@ -6,89 +6,98 @@ import {LineDrawerV1} from "./tool-classes/line-drawer-v1";
 import {LineDrawerV2} from "./tool-classes/line-drawer-v2";
 import {LineDrawerV3} from "./tool-classes/line-drawer-v3";
 import {LineDrawerV4} from "./tool-classes/line-drawer-v4";
+import {Lab} from "./lab";
 
-function createBlackImage() {
-    const blackImage = createImage("Black");
-    const blackImageCtx = blackImage.getContext("2d");
-    const paintbrush = new Paintbrush(blackImageCtx);
-    paintbrush
-        .fill()
-        .grayscale();
-}
 
-function createWhiteImage() {
-    const whiteImage = createImage("White");
-    const whiteImageCtx = whiteImage.getContext("2d");
-    const paintbrush = new Paintbrush(whiteImageCtx);
-    paintbrush
-        .fill(new Color(255, 255, 255))
-        .grayscale();
-}
+export class Lab1 extends Lab {
 
-function createRedImage() {
-    const redImage = createImage("Red");
-    const redImageCtx = redImage.getContext("2d");
-    const paintbrush = new Paintbrush(redImageCtx);
-    paintbrush
-        .fill(new Color(255, 0, 0));
-}
+    constructor() {
+       super();
+    }
 
-function createGradientImage() {
-    const gradientImage = createImage("Gradient");
-    const gradientImageCtx = gradientImage.getContext("2d");
-    const paintbrush = new Paintbrush(gradientImageCtx);
-    paintbrush
-        .gradient();
-}
+    #createBlackImage() {
+        const blackImage = createImage("Black");
+        const blackImageCtx = blackImage.getContext("2d");
+        const paintbrush = new Paintbrush(blackImageCtx);
+        paintbrush
+            .fill()
+            .grayscale();
+    }
 
-function createStarImages() {
-    const starImage1 = createImage("Star 1");
-    const starImage1Ctx = starImage1.getContext("2d");
+    #createWhiteImage() {
+        const whiteImage = createImage("White");
+        const whiteImageCtx = whiteImage.getContext("2d");
+        const paintbrush = new Paintbrush(whiteImageCtx);
+        paintbrush
+            .fill(new Color(255, 255, 255))
+            .grayscale();
+    }
 
-    const lineDrawerV1 = new LineDrawerV1(starImage1Ctx);
-    drawStar(lineDrawerV1);
+    #createRedImage() {
+        const redImage = createImage("Red");
+        const redImageCtx = redImage.getContext("2d");
+        const paintbrush = new Paintbrush(redImageCtx);
+        paintbrush
+            .fill(new Color(255, 0, 0));
+    }
 
-    const starImage2 = createImage("Star 2");
-    const starImage2Ctx = starImage2.getContext("2d");
+    #createGradientImage() {
+        const gradientImage = createImage("Gradient");
+        const gradientImageCtx = gradientImage.getContext("2d");
+        const paintbrush = new Paintbrush(gradientImageCtx);
+        paintbrush
+            .gradient();
+    }
 
-    const lineDrawerV2 = new LineDrawerV2(starImage2Ctx);
-    drawStar(lineDrawerV2);
+    #createStarImages() {
+        const starImage1 = createImage("Star 1");
+        const starImage1Ctx = starImage1.getContext("2d");
 
-    const starImage3 = createImage("Star 3");
-    const starImage3Ctx = starImage3.getContext("2d");
+        const lineDrawerV1 = new LineDrawerV1(starImage1Ctx);
+        drawStar(lineDrawerV1);
 
-    const lineDrawerV3 = new LineDrawerV3(starImage3Ctx);
-    drawStar(lineDrawerV3);
+        const starImage2 = createImage("Star 2");
+        const starImage2Ctx = starImage2.getContext("2d");
 
-    const starImage4 = createImage("Star 4");
-    const starImage4Ctx = starImage4.getContext("2d");
+        const lineDrawerV2 = new LineDrawerV2(starImage2Ctx);
+        drawStar(lineDrawerV2);
 
-    const lineDrawerV4 = new LineDrawerV4(starImage4Ctx);
-    drawStar(lineDrawerV4);
-}
+        const starImage3 = createImage("Star 3");
+        const starImage3Ctx = starImage3.getContext("2d");
 
-async function createVertexImage(parsedObjFile, scaling) {
-    const vertexImage = createImage("Vertex Image", 1000, 1000);
-    const vertexImageCtx = vertexImage.getContext("2d");
-    const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
-    drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, scaling);
-}
+        const lineDrawerV3 = new LineDrawerV3(starImage3Ctx);
+        drawStar(lineDrawerV3);
 
-async function createPolygonImage(parsedObjFile, scaling) {
-    const polygonImage = createImage("Polygon Image", 1000, 1000);
-    const polygonImageCtx = polygonImage.getContext("2d");
-    const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
-    drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
-}
+        const starImage4 = createImage("Star 4");
+        const starImage4Ctx = starImage4.getContext("2d");
 
-export function runLab1() {
-    createBlackImage();
-    createWhiteImage();
-    createRedImage();
-    createGradientImage();
-    createStarImages();
-    prepareObjFileUploading(async (parsedObjFile, scaling) => {
-        await createVertexImage(parsedObjFile, scaling);
-        await createPolygonImage(parsedObjFile, scaling);
-    });
+        const lineDrawerV4 = new LineDrawerV4(starImage4Ctx);
+        drawStar(lineDrawerV4);
+    }
+
+    async #createVertexImage(parsedObjFile, scaling) {
+        const vertexImage = createImage("Vertex Image", 1000, 1000);
+        const vertexImageCtx = vertexImage.getContext("2d");
+        const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
+        drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, scaling);
+    }
+
+    async #createPolygonImage(parsedObjFile, scaling) {
+        const polygonImage = createImage("Polygon Image", 1000, 1000);
+        const polygonImageCtx = polygonImage.getContext("2d");
+        const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
+        drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
+    }
+
+    run() {
+        this.#createBlackImage();
+        this.#createWhiteImage();
+        this.#createRedImage();
+        this.#createGradientImage();
+        this.#createStarImages();
+        prepareObjFileUploading(async (parsedObjFile, scaling) => {
+            await this.#createVertexImage(parsedObjFile, scaling);
+            await this.#createPolygonImage(parsedObjFile, scaling);
+        });
+    }
 }

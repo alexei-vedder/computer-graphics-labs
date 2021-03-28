@@ -1,6 +1,7 @@
 import {saveAs} from "file-saver";
 import OBJFile from "obj-file-parser";
 import {round} from "mathjs";
+import {LabFactory} from "./lab-factory";
 
 export function createImage(name = "image", width = 200, height = 200) {
     const canvas = document.createElement("canvas");
@@ -63,15 +64,17 @@ export function toggleLoader(enabled) {
 }
 
 export function switchTabs(tab, callback) {
-    if (tab.classList.contains("active")) {
+    const tabLink = tab.firstElementChild;
+    if (tabLink.classList.contains("active")) {
         return;
     }
-    tab.classList.add("active");
-    tab.parentElement.parentElement.childNodes.forEach((childNode) => {
-        if (childNode.hasChildNodes() && childNode?.lastElementChild !== tab) {
-            childNode.lastElementChild.classList.remove("active");
-        }
-    });
+    tabLink.classList.add("active");
+    tab.parentElement.childNodes
+        .forEach((tabItem) => {
+            if (tabItem.hasChildNodes() && tabItem !== tab) {
+                tabItem.firstElementChild.classList.remove("active");
+            }
+        });
 
     document.getElementById("image-container").innerHTML = "";
     callback();
@@ -107,4 +110,40 @@ export function prepareObjFileUploading(handleParsedObjFile) {
     objFileSubmit.addEventListener("click", () => {
         fileReader.readAsText(objFileInput.files[0], "UTF-8");
     });
+}
+
+export function initTabs(defaultTabIndex) {
+
+    const getTabItemTemplate = (tabName) => `<li class="nav-item"><a class="nav-link">${tabName}</a></li>`;
+
+    let tabsTemplate = LabFactory.labs
+        .map(lab => getTabItemTemplate("Lab " + lab.name.match(/([0-9])\w*/)[0]))
+        .join("");
+
+    document
+        .getElementById("navbarSupportedContent")
+        .insertAdjacentHTML("afterbegin", `<ul class="navbar-nav me-auto mb-2 mb-lg-0">${tabsTemplate}</ul>`);
+
+    const tabs = document
+        .getElementById("navbarSupportedContent")
+        .firstElementChild
+        .getElementsByTagName("LI");
+
+    for (let i = 0, tabItem = tabs.item(i); i < tabs.length; tabItem = tabs.item(++i)) {
+
+        tabItem.onclick = () => {
+            switchTabs(tabItem, () => {
+                const labInstance = LabFactory.getLabInstanceByTabName(tabItem.firstElementChild.innerText);
+                toggleLoader(true)
+                setTimeout(() => {
+                    labInstance.run();
+                    toggleLoader(false)
+                }, 100);
+            });
+        }
+
+        if (i === defaultTabIndex) {
+            tabItem.onclick();
+        }
+    }
 }
