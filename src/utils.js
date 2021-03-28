@@ -97,9 +97,11 @@ export function prepareObjFileUploading(handleParsedObjFile) {
 
         toggleLoader(true)
         setTimeout(() => {
-            handleParsedObjFile(parsedObjFile, {alpha, beta});
-            toggleLoader(false);
-        }, 100)
+            handleParsedObjFile(parsedObjFile, {alpha, beta})
+                .then(() => {
+                    toggleLoader(false);
+                });
+        }, 100);
     };
 
     objFileSubmit.addEventListener("click", () => {

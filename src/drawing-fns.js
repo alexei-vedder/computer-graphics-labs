@@ -1,4 +1,4 @@
-import {cos, cross, dot, sin, abs, divide, sqrt, square} from "mathjs";
+import {abs, cos, cross, divide, dot, sin, sqrt, square} from "mathjs";
 import {Color} from "./models/color";
 import {Vertex} from "./models/vertex";
 
@@ -39,7 +39,7 @@ export function drawPolygonImage(lineDrawer, vertices, faces, scaling) {
 
 export function drawFilledPolygonImage(polygonFiller, vertices, faces, scaling) {
     polygonFiller.fill();
-    faces.forEach(face => {
+    for (let face of faces) {
         const polygonVertices = findPolygonVertices(vertices, face, scaling);
         polygonFiller
             .fillPolygon(
@@ -47,12 +47,12 @@ export function drawFilledPolygonImage(polygonFiller, vertices, faces, scaling) 
                 new Vertex(polygonVertices[1].x, polygonVertices[1].y),
                 new Vertex(polygonVertices[2].x, polygonVertices[2].y)
             )
-    });
+    }
 }
 
 export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, faces, scaling, lightDirection = [0, 0, 1]) {
     polygonFiller.fill();
-    faces.forEach(face => {
+    for (let face of faces) {
         const polygonVertices = findPolygonVertices(vertices, face, scaling);
         const normal = cross(
             [polygonVertices[1].x - polygonVertices[0].x, polygonVertices[1].y - polygonVertices[0].y, polygonVertices[1].z - polygonVertices[0].z],
@@ -68,8 +68,8 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, fa
                     new Vertex(polygonVertices[0].x, polygonVertices[0].y, polygonVertices[0].z),
                     new Vertex(polygonVertices[1].x, polygonVertices[1].y, polygonVertices[1].z),
                     new Vertex(polygonVertices[2].x, polygonVertices[2].y, polygonVertices[2].z),
-                    new Color(255 * abs(cosineOfAngleOfIncidence), 255 * abs(cosineOfAngleOfIncidence), 0)
+                    new Color(80 * abs(cosineOfAngleOfIncidence), 255 * abs(cosineOfAngleOfIncidence), 0)
                 );
         }
-    })
+    }
 }
