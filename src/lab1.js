@@ -75,18 +75,18 @@ export class Lab1 extends Lab {
         drawStar(lineDrawerV4);
     }
 
-    async #createVertexImage(parsedObjFile, scaling) {
+    async #createVertexImage(parsedObjFile, config) {
         const vertexImage = createImage("Vertex Image", 1000, 1000);
         const vertexImageCtx = vertexImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
-        drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, scaling);
+        drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, config);
     }
 
-    async #createPolygonImage(parsedObjFile, scaling) {
+    async #createPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Polygon Image", 1000, 1000);
         const polygonImageCtx = polygonImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
-        drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
+        drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, config);
     }
 
     run() {
@@ -95,9 +95,9 @@ export class Lab1 extends Lab {
         this.#createRedImage();
         this.#createGradientImage();
         this.#createStarImages();
-        prepareObjFileUploading(async (parsedObjFile, scaling) => {
-            await this.#createVertexImage(parsedObjFile, scaling);
-            await this.#createPolygonImage(parsedObjFile, scaling);
+        prepareObjFileUploading(async (parsedObjFile, config) => {
+            await this.#createVertexImage(parsedObjFile, config);
+            await this.#createPolygonImage(parsedObjFile, config);
         });
     }
 }

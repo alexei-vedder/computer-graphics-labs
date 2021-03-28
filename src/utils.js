@@ -35,10 +35,10 @@ function initObjFileUploadPanel() {
             <section id="obj-file-upload-panel">
                 <label for="obj-file-input">Add your .obj file</label>
                 <input id="obj-file-input" class="form-control" type="file"/>
-                <label for="obj-file-alpha">Alpha (scaling)</label>
-                <input id="obj-file-alpha" class="form-control" type="number" value="20"/>
-                <label for="obj-file-beta">Beta (displacement)</label>
-                <input id="obj-file-beta" class="form-control" type="number" value="500"/>
+                <label for="obj-file-scaling">Scaling</label>
+                <input id="obj-file-scaling" class="form-control" type="number" value="20"/>
+                <label for="obj-file-displacement">Displacement</label>
+                <input id="obj-file-displacement" class="form-control" type="number" value="500"/>
                 <button type="button" class="btn btn-primary" id="obj-file-submit">Render</button>
             </section>
         `)
@@ -86,21 +86,20 @@ export function prepareObjFileUploading(handleParsedObjFile) {
 
     const objFileInput = document.getElementById("obj-file-input");
     const objFileSubmit = document.getElementById("obj-file-submit");
-    const objFileAlpha = document.getElementById("obj-file-alpha");
-    const objFileBeta = document.getElementById("obj-file-beta");
+    const objFileAlpha = document.getElementById("obj-file-scaling");
+    const objFileBeta = document.getElementById("obj-file-displacement");
     const fileReader = new FileReader();
 
     fileReader.onload = (fileLoadedEvent) => {
         const fileContent = fileLoadedEvent.target.result;
         const objFile = new OBJFile(fileContent);
         const parsedObjFile = objFile.parse();
-        const alpha = round(objFileAlpha.value);
-        const beta = round(objFileBeta.value);
-        console.log(parsedObjFile, alpha, beta);
+        const scaling = round(objFileAlpha.value);
+        const displacement = round(objFileBeta.value);
 
         toggleLoader(true)
         setTimeout(() => {
-            handleParsedObjFile(parsedObjFile, {alpha, beta})
+            handleParsedObjFile(parsedObjFile, {scaling, displacement})
                 .then(() => {
                     toggleLoader(false);
                 });
@@ -112,7 +111,7 @@ export function prepareObjFileUploading(handleParsedObjFile) {
     });
 }
 
-export function initTabs(defaultTabIndex) {
+export function initTabs(defaultTabIndex = 0) {
 
     const getTabItemTemplate = (tabName) => `<li class="nav-item"><a class="nav-link">${tabName}</a></li>`;
 
