@@ -37,8 +37,10 @@ function initObjFileUploadPanel() {
                 <input id="obj-file-input" class="form-control" type="file"/>
                 <label for="obj-file-scaling">Scaling</label>
                 <input id="obj-file-scaling" class="form-control" type="number" value="20"/>
-                <label for="obj-file-displacement">Displacement</label>
-                <input id="obj-file-displacement" class="form-control" type="number" value="500"/>
+                <label for="obj-file-displacement-x">Displacement (x)</label>
+                <input id="obj-file-displacement-x" class="form-control" type="number" value="500"/>
+                <label for="obj-file-displacement-y">Displacement (y)</label>
+                <input id="obj-file-displacement-y" class="form-control" type="number" value="500"/>
                 <button type="button" class="btn btn-primary" id="obj-file-submit">Render</button>
             </section>
         `)
@@ -86,16 +88,21 @@ export function prepareObjFileUploading(handleParsedObjFile) {
 
     const objFileInput = document.getElementById("obj-file-input");
     const objFileSubmit = document.getElementById("obj-file-submit");
-    const objFileAlpha = document.getElementById("obj-file-scaling");
-    const objFileBeta = document.getElementById("obj-file-displacement");
+    const objFileScaling = document.getElementById("obj-file-scaling");
+    const objFileDisplacementX = document.getElementById("obj-file-displacement-x");
+    const objFileDisplacementY = document.getElementById("obj-file-displacement-y");
     const fileReader = new FileReader();
 
     fileReader.onload = (fileLoadedEvent) => {
         const fileContent = fileLoadedEvent.target.result;
         const objFile = new OBJFile(fileContent);
         const parsedObjFile = objFile.parse();
-        const scaling = round(objFileAlpha.value);
-        const displacement = round(objFileBeta.value);
+        const scaling = round(objFileScaling.value);
+        const displacement = {
+            x: round(objFileDisplacementX.value),
+            y: round(objFileDisplacementY.value)
+        }
+
 
         toggleLoader(true)
         setTimeout(() => {

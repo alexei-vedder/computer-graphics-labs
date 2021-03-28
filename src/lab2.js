@@ -4,6 +4,7 @@ import {Vertex} from "./models/vertex";
 import {PolygonFiller} from "./tool-classes/polygon-filler";
 import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
 import {Lab} from "./lab";
+import {BasicCoordTransformer} from "./tool-classes/coord-transformer";
 
 export class Lab2 extends Lab {
 
@@ -40,14 +41,14 @@ export class Lab2 extends Lab {
             )
     }
 
-    async #createFilledPolygonImage(parsedObjFile, scaling) {
+    async #createFilledPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
         const polygonImageCtx = polygonImage.getContext("2d");
         const polygonFiller = new PolygonFiller(polygonImageCtx);
-        drawFilledPolygonImage(polygonFiller, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, scaling);
+        drawFilledPolygonImage(polygonFiller, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, new BasicCoordTransformer(config));
     }
 
-    async #createLightSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection) {
+    async #createLightSensitiveFilledPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
         const polygonImageCtx = polygonImage.getContext("2d");
         const polygonFiller = new PolygonFiller(polygonImageCtx);
@@ -55,12 +56,11 @@ export class Lab2 extends Lab {
             polygonFiller,
             parsedObjFile.models[0].vertices,
             parsedObjFile.models[0].faces,
-            scaling,
-            lightDirection
+            new BasicCoordTransformer(config)
         );
     }
 
-    async #createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection) {
+    async #createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
         const polygonImageCtx = polygonImage.getContext("2d");
         const polygonFiller = new ZBufferedPolygonFiller(polygonImageCtx);
@@ -68,17 +68,16 @@ export class Lab2 extends Lab {
             polygonFiller,
             parsedObjFile.models[0].vertices,
             parsedObjFile.models[0].faces,
-            scaling,
-            lightDirection
+            new BasicCoordTransformer(config)
         );
     }
 
     run() {
         this.#createTriangleImage();
-        prepareObjFileUploading(async (parsedObjFile, scaling, lightDirection) => {
-            await this.#createFilledPolygonImage(parsedObjFile, scaling);
-            await this.#createLightSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection);
-            await this.#createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, scaling, lightDirection);
+        prepareObjFileUploading(async (parsedObjFile, config) => {
+            await this.#createFilledPolygonImage(parsedObjFile, config);
+            await this.#createLightSensitiveFilledPolygonImage(parsedObjFile, config);
+            await this.#createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config);
         });
     }
 }

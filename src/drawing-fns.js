@@ -1,4 +1,4 @@
-import {abs, add, cos, cross, divide, dot, multiply, sin, sqrt, square} from "mathjs";
+import {abs, cos, cross, divide, dot, sin, sqrt, square} from "mathjs";
 import {Color} from "./models/color";
 import {Vertex} from "./models/vertex";
 
@@ -11,10 +11,10 @@ export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     }
 }
 
-export function drawVertexImage(lineDrawer, vertices, config) {
+export function drawVertexImage(lineDrawer, vertices, transformer) {
     lineDrawer.fill();
     vertices.forEach(v => {
-        const vertex = addScreenCoordinates(new Vertex(v.x, -v.y, v.z), config);
+        const vertex = transformer.transform(new Vertex(v.x, -v.y, v.z));
         lineDrawer.setPixel(vertex.u, vertex.v);
     });
 }
@@ -30,46 +30,21 @@ function findPolygonVertices(allVertices, face) {
     });
 }
 
-function addProjectiveScreenCoordinates(vertex, config) {
-    const transformed = multiply(
-        [
-            [10000, 0, 0],
-            [0, 10000, 0],
-            [500, 500, 1]
-        ],
-        add(
-            [vertex.x, vertex.y, vertex.z],
-            [0.005, -0.045, 15]
-        )
-    );
-    vertex.setTransformedCoordinates(transformed[0], transformed[1], transformed[2]);
-    return vertex;
-}
-
-function addScreenCoordinates(vertex, config) {
-    vertex.setTransformedCoordinates(
-        config.scaling * vertex.x + config.displacement,
-        config.scaling * vertex.y + config.displacement,
-        config.scaling * vertex.z + config.displacement
-    );
-    return vertex;
-}
-
-export function drawPolygonImage(lineDrawer, vertices, faces, config) {
+export function drawPolygonImage(lineDrawer, vertices, faces, transformer) {
     lineDrawer.fill();
     for (let face of faces) {
         const polygonVertices = findPolygonVertices(vertices, face)
-            .map(vertex => addScreenCoordinates(vertex, config));
+            .map(vertex => transformer.transform(vertex));
         lineDrawer
             .drawPolygon(polygonVertices[0].u, polygonVertices[0].v, polygonVertices[1].u, polygonVertices[1].v, polygonVertices[2].u, polygonVertices[2].v);
     }
 }
 
-export function drawFilledPolygonImage(polygonFiller, vertices, faces, config) {
+export function drawFilledPolygonImage(polygonFiller, vertices, faces, transformer) {
     polygonFiller.fill();
     for (let face of faces) {
         const polygonVertices = findPolygonVertices(vertices, face)
-            .map(vertex => addScreenCoordinates(vertex, config));
+            .map(vertex => transformer.transform(vertex));
         polygonFiller.fillPolygon(
             new Vertex(polygonVertices[0].u, polygonVertices[0].v),
             new Vertex(polygonVertices[1].u, polygonVertices[1].v),
@@ -78,13 +53,13 @@ export function drawFilledPolygonImage(polygonFiller, vertices, faces, config) {
     }
 }
 
-export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, faces, config, lightDirection = [0, 0, 1]) {
+export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, faces, transformer, lightDirection = [0, 0, 1]) {
     polygonFiller.fill();
 
     for (let face of faces) {
 
         const polygonVertices = findPolygonVertices(vertices, face)
-            .map(vertex => addScreenCoordinates(vertex, config));
+            .map(vertex => transformer.transform(vertex));
 
         const normal = cross(
             [

@@ -7,6 +7,7 @@ import {LineDrawerV2} from "./tool-classes/line-drawer-v2";
 import {LineDrawerV3} from "./tool-classes/line-drawer-v3";
 import {LineDrawerV4} from "./tool-classes/line-drawer-v4";
 import {Lab} from "./lab";
+import {BasicCoordTransformer} from "./tool-classes/coord-transformer";
 
 
 export class Lab1 extends Lab {
@@ -79,14 +80,14 @@ export class Lab1 extends Lab {
         const vertexImage = createImage("Vertex Image", 1000, 1000);
         const vertexImageCtx = vertexImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
-        drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, config);
+        drawVertexImage(lineDrawerV4, parsedObjFile.models[0].vertices, new BasicCoordTransformer(config));
     }
 
     async #createPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Polygon Image", 1000, 1000);
         const polygonImageCtx = polygonImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
-        drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, config);
+        drawPolygonImage(lineDrawerV4, parsedObjFile.models[0].vertices, parsedObjFile.models[0].faces, new BasicCoordTransformer(config));
     }
 
     run() {
