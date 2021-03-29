@@ -6,4 +6,4 @@ import "regenerator-runtime/runtime";
 
 import {initTabs} from "./utils";
 
-initTabs(1);
+initTabs(2);
