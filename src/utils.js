@@ -30,8 +30,7 @@ function initObjFileUploadPanel(controls) {
         objFileUploadPanel.parentNode.removeChild(objFileUploadPanel);
     }
 
-    const controlsTemplates =
-        controls.map(control => `<label for="${control.id}">${control.label}</label>
+    const controlsTemplates = controls.map(control => `<label for="${control.id}">${control.label}</label>
                 <input id="${control.id}" class="form-control" type="${control.type}" value="${control.value}"/>`);
 
     document
@@ -46,7 +45,7 @@ function initObjFileUploadPanel(controls) {
         `)
 }
 
-export function toggleLoader(enabled) {
+function toggleLoader(enabled) {
     const loader = document.getElementById("loader")
     if (enabled) {
         if (!loader) {
@@ -65,7 +64,7 @@ export function toggleLoader(enabled) {
     }
 }
 
-export function switchTabs(tab, callback) {
+function switchTabs(tab, callback) {
     const tabLink = tab.firstElementChild;
     if (tabLink.classList.contains("active")) {
         return;
