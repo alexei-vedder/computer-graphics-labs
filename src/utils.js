@@ -6,6 +6,7 @@ import {LabFactory} from "./lab-factory";
 export function createImage(name = "image", width = 200, height = 200) {
     const canvas = document.createElement("canvas");
     canvas.className = "image";
+    canvas.title = "Click to download";
     canvas.width = width;
     canvas.height = height;
 
@@ -15,7 +16,7 @@ export function createImage(name = "image", width = 200, height = 200) {
 
     canvas.addEventListener("click", () => {
         const dataURL = canvas.toDataURL();
-        saveAs(dataURL, `${name}.png`)
+        saveAs(dataURL, `${name}.png`);
     });
 
     return canvas;
