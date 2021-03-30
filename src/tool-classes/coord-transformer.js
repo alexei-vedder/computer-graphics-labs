@@ -1,4 +1,4 @@
-import {add, multiply, transpose} from "mathjs";
+import {cos, multiply, sin, transpose} from "mathjs";
 
 export class CoordTransformer {
 
@@ -34,40 +34,59 @@ export class ProjectiveCoordTransformer extends CoordTransformer {
     }
 
     transform(vertex) {
+
+        this.#rotate(vertex);
+
         const intrinsic = [
             [this.config.scaling, 0, this.config.displacementX],
             [0, this.config.scaling, this.config.displacementY],
             [0, 0, 1]
         ];
 
+        vertex.x += this.config.shiftX;
+        vertex.y += this.config.shiftY;
+        vertex.z += this.config.shiftZ;
+
         let transformedCoords = transpose(multiply(
             intrinsic,
-            add(
-                [
-                    [vertex.x],
-                    [vertex.y],
-                    [vertex.z]
-                ], [
-                    [this.config.shiftX],
-                    [this.config.shiftY],
-                    [this.config.shiftZ]
-                ]
-            )
+            [
+                [vertex.x],
+                [vertex.y],
+                [vertex.z]
+            ]
         )).flat();
 
         const z = transformedCoords[2];
         transformedCoords = transformedCoords.map(coord => coord / z);
         vertex.setTransformedCoordinates(transformedCoords[0], transformedCoords[1], transformedCoords[2]);
 
-        /** Another way to calculate new coordinates
-
-         const u = this.config.scaling * (vertex.x + 0.005) / (vertex.z + 0.2) + this.config.displacementX,
-         v = this.config.scaling * (vertex.y + 0.045) / (vertex.z + 0.2) + this.config.displacementY,
-         w = 1;
-         vertex.setTransformedCoordinates(u, v, w);
-
-         */
-
         return vertex;
+    }
+
+    #rotate(vertex) {
+
+        const {alpha, beta, gamma} = this.config;
+
+        const xRotationMatrix = [
+            [1, 0, 0],
+            [0, cos(alpha), sin(alpha)],
+            [0, -sin(alpha), cos(alpha)]
+        ];
+
+        const yRotationMatrix = [
+            [cos(beta), 0, sin(beta)],
+            [0, 1, 0],
+            [-sin(beta), 0, cos(beta)]
+        ];
+
+        const zRotationMatrix = [
+            [cos(gamma), sin(gamma), 0],
+            [-sin(gamma), cos(gamma), 0],
+            [0, 0, 1]
+        ];
+
+        const rotationMatrix = multiply(multiply(xRotationMatrix, yRotationMatrix), zRotationMatrix);
+
+        [vertex.x, vertex.y, vertex.z] = transpose(multiply(rotationMatrix, [[vertex.x], [vertex.y], [vertex.z]])).flat();
     }
 }

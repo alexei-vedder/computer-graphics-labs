@@ -3,6 +3,7 @@ import {createImage, prepareObjFileUploading} from "./utils";
 import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
 import {drawLightSensitiveFilledPolygonImage} from "./drawing-fns";
 import {ProjectiveCoordTransformer} from "./tool-classes/coord-transformer";
+import {unit} from "mathjs";
 
 export class Lab3 extends Lab {
 
@@ -13,7 +14,7 @@ export class Lab3 extends Lab {
             value: 0.005,
             label: "Shift (x)",
             handle: (value) => ({
-                shiftX: value
+                shiftX: Number.parseFloat(value)
             })
         },
         {
@@ -22,7 +23,7 @@ export class Lab3 extends Lab {
             value: 0.05,
             label: "Shift (y)",
             handle: (value) => ({
-                shiftY: value
+                shiftY: Number.parseFloat(value)
             })
         },
         {
@@ -31,7 +32,37 @@ export class Lab3 extends Lab {
             value: 0.2,
             label: "Shift (z)",
             handle: (value) => ({
-                shiftZ: value
+                shiftZ: Number.parseFloat(value)
+            })
+        }
+    ];
+
+    #rotationAngleControls = [
+        {
+            id: "alpha",
+            type: "number",
+            value: 0,
+            label: "Alpha (x angle in degrees)",
+            handle: (value) => ({
+                alpha: unit(Number.parseFloat(value), "deg")
+            })
+        },
+        {
+            id: "beta",
+            type: "number",
+            value: 0,
+            label: "Beta (y angle in degrees)",
+            handle: (value) => ({
+                beta: unit(Number.parseFloat(value), "deg")
+            })
+        },
+        {
+            id: "gamma",
+            type: "number",
+            value: 0,
+            label: "Gamma (z angle in degrees)",
+            handle: (value) => ({
+                gamma: unit(Number.parseFloat(value), "deg")
             })
         }
     ];
@@ -57,7 +88,7 @@ export class Lab3 extends Lab {
             await this.#createProjectedImage(parsedObjFile, config);
         };
 
-        prepareObjFileUploading(handler, this.#shiftVectorControls);
+        prepareObjFileUploading(handler, [...this.#shiftVectorControls, ...this.#rotationAngleControls]);
     }
 
 }

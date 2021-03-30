@@ -81,7 +81,10 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, fa
                 polygonVertices[0],
                 polygonVertices[1],
                 polygonVertices[2],
-                new Color(80 * abs(cosineOfAngleOfIncidence), 255 * abs(cosineOfAngleOfIncidence), 0)
+                new Color(
+                    80 * abs(cosineOfAngleOfIncidence),
+                    255 * abs(cosineOfAngleOfIncidence),
+                    0)
             );
         }
     }
