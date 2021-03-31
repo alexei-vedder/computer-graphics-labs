@@ -24,7 +24,7 @@ function findPolygonVertices(allVertices, face) {
         const vertex = allVertices[faceVertex.vertexIndex - 1];
         return new Vertex(
             vertex.x,
-            -vertex.y,
+            -1 * vertex.y,
             vertex.z
         );
     });
@@ -46,11 +46,29 @@ export function drawFilledPolygonImage(polygonFiller, vertices, faces, transform
         const polygonVertices = findPolygonVertices(vertices, face)
             .map(vertex => transformer.transform(vertex));
         polygonFiller.fillPolygon(
-            new Vertex(polygonVertices[0].u, polygonVertices[0].v),
-            new Vertex(polygonVertices[1].u, polygonVertices[1].v),
-            new Vertex(polygonVertices[2].u, polygonVertices[2].v)
+            polygonVertices[0],
+            polygonVertices[1],
+            polygonVertices[2]
         );
     }
+}
+
+function findCosineOfAngleOfIncidence(polygonVertices, lightDirection) {
+    const normal = cross(
+        [
+            polygonVertices[1].x - polygonVertices[0].x, polygonVertices[1].y - polygonVertices[0].y,
+            polygonVertices[1].z - polygonVertices[0].z
+        ], [
+            polygonVertices[1].x - polygonVertices[2].x, polygonVertices[1].y - polygonVertices[2].y,
+            polygonVertices[1].z - polygonVertices[2].z
+        ]
+    );
+
+    return divide(
+        dot(normal, lightDirection),
+        sqrt(square(normal[0]) + square(normal[1]) + square(normal[2]))
+        * sqrt(square(lightDirection[0]) + square(lightDirection[1]) + square(lightDirection[2]))
+    );
 }
 
 export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, faces, transformer, lightDirection = [0, 0, 1]) {
@@ -61,20 +79,7 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, fa
         const polygonVertices = findPolygonVertices(vertices, face)
             .map(vertex => transformer.transform(vertex));
 
-        const normal = cross(
-            [
-                polygonVertices[1].x - polygonVertices[0].x, polygonVertices[1].y - polygonVertices[0].y,
-                polygonVertices[1].z - polygonVertices[0].z
-            ], [
-                polygonVertices[1].x - polygonVertices[2].x, polygonVertices[1].y - polygonVertices[2].y,
-                polygonVertices[1].z - polygonVertices[2].z
-            ]
-        );
-
-        const cosineOfAngleOfIncidence = divide(
-            dot(normal, lightDirection),
-            sqrt(square(normal[0]) + square(normal[1]) + square(normal[2])) * sqrt(square(lightDirection[0]) + square(lightDirection[1] + square(lightDirection[2])))
-        );
+        const cosineOfAngleOfIncidence = findCosineOfAngleOfIncidence(polygonVertices, lightDirection);
 
         if (cosineOfAngleOfIncidence < 0) {
             polygonFiller.fillPolygon(

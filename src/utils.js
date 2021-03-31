@@ -40,7 +40,8 @@ function initObjFileUploadPanel(controls) {
                 <label for="obj-file-input">Add your .obj file</label>
                 <input id="obj-file-input" class="form-control" type="file"/>
                 ${controlsTemplates.join("")}
-                <button type="button" class="btn btn-primary" id="obj-file-submit">Render</button>
+                <button type="button" class="btn" id="auto-adjust-btn" disabled>Auto adjust</button>
+                <button type="button" class="btn btn-primary" id="render-btn" disabled>Render</button>
             </section>
         `)
 }
@@ -81,65 +82,88 @@ function switchTabs(tab, callback) {
     callback();
 }
 
+const defaultControls = [
+    {
+        id: "scaling",
+        type: "number",
+        value: 1000,
+        label: "Scaling",
+        handle: (value) => ({
+            scaling: round(value)
+        })
+    }, {
+        id: "displacement-x",
+        type: "number",
+        value: 500,
+        label: "Displacement (x)",
+        handle: (value) => ({
+            displacementX: round(value)
+        })
+    }, {
+        id: "displacement-y",
+        type: "number",
+        value: 500,
+        label: "Displacement (y)",
+        handle: (value) => ({
+            displacementY: round(value)
+        })
+    }
+];
+
 export function prepareObjFileUploading(handleParsedObjFile, extraControls = []) {
 
-    const controls = [
-        {
-            id: "scaling",
-            type: "number",
-            value: 1000,
-            label: "Scaling",
-            handle: (value) => ({
-                scaling: round(value)
-            })
-        }, {
-            id: "displacement-x",
-            type: "number",
-            value: 500,
-            label: "Displacement (x)",
-            handle: (value) => ({
-                displacementX: round(value)
-            })
-        }, {
-            id: "displacement-y",
-            type: "number",
-            value: 500,
-            label: "Displacement (y)",
-            handle: (value) => ({
-                displacementY: round(value)
-            })
-        }
-    ].concat(extraControls);
+    const controls = defaultControls.concat(extraControls);
 
     initObjFileUploadPanel(controls);
 
     const objFileInput = document.getElementById("obj-file-input");
-    const objFileSubmit = document.getElementById("obj-file-submit");
+    const renderButton = document.getElementById("render-btn");
+    const autoAdjustButton = document.getElementById("auto-adjust-btn");
     const fileReader = new FileReader();
 
-    objFileSubmit.addEventListener("click", () => {
+    const readFile = () => {
         const uploadedFile = objFileInput.files[0];
         if (uploadedFile) {
             fileReader.readAsText(uploadedFile, "UTF-8");
+        } else {
+            renderButton.disabled = true;
+            autoAdjustButton.disabled = true;
         }
-    });
+    };
+
+    const getConfig = () => controls.reduce((config, control) => {
+        const controlValue = control.handle(document.getElementById(control.id).value);
+        return Object.assign(config, controlValue)
+    }, {});
+
+    objFileInput.addEventListener("change", readFile);
 
     fileReader.onload = (fileLoadedEvent) => {
         const fileContent = fileLoadedEvent.target.result;
         const parsedObjFile = new OBJFile(fileContent).parse();
 
-        const config = controls.reduce((config, control) => {
-            const controlValue = control.handle(document.getElementById(control.id).value);
-            return Object.assign(config, controlValue)
-        }, {});
+        autoAdjustButton.addEventListener("click", () => {
+            toggleLoader(true)
+            setTimeout(() => {
+                handleParsedObjFile(parsedObjFile, getConfig(), "adjust")
+                    .then(() => {
+                        toggleLoader(false);
+                    });
+            }, 100);
+        });
 
-        toggleLoader(true)
-        setTimeout(() => {
-            handleParsedObjFile(parsedObjFile, config)
-                .then(() => {
-                    toggleLoader(false);
-                });
-        }, 100);
+        renderButton.addEventListener("click", () => {
+            toggleLoader(true)
+            setTimeout(() => {
+                handleParsedObjFile(parsedObjFile, getConfig(), "render")
+                    .then(() => {
+                        toggleLoader(false);
+                    });
+            }, 100);
+        });
+
+        autoAdjustButton.disabled = false;
+        renderButton.disabled = false;
     };
 }
 

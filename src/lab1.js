@@ -91,14 +91,20 @@ export class Lab1 extends Lab {
     }
 
     run() {
+        const handler = async (parsedObjFile, config, mode = "render") => {
+            if (mode === "render") {
+                await this.#createVertexImage(parsedObjFile, config);
+                await this.#createPolygonImage(parsedObjFile, config);
+            } else if (mode === "adjust") {
+                // TODO
+            }
+        }
+
         this.#createBlackImage();
         this.#createWhiteImage();
         this.#createRedImage();
         this.#createGradientImage();
         this.#createStarImages();
-        prepareObjFileUploading(async (parsedObjFile, config) => {
-            await this.#createVertexImage(parsedObjFile, config);
-            await this.#createPolygonImage(parsedObjFile, config);
-        });
+        prepareObjFileUploading(handler);
     }
 }

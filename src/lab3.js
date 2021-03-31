@@ -74,9 +74,8 @@ export class Lab3 extends Lab {
     async #createProjectedImage(parsedObjFile, config) {
         const image = createImage("Projected Polygon Image", 1000, 1000);
         const imageCtx = image.getContext("2d");
-        const polygonFiller = new ZBufferedPolygonFiller(imageCtx);
         drawLightSensitiveFilledPolygonImage(
-            polygonFiller,
+            new ZBufferedPolygonFiller(imageCtx),
             parsedObjFile.models[0].vertices,
             parsedObjFile.models[0].faces,
             new ProjectiveCoordTransformer(config)
@@ -84,8 +83,12 @@ export class Lab3 extends Lab {
     }
 
     run() {
-        const handler = async (parsedObjFile, config) => {
-            await this.#createProjectedImage(parsedObjFile, config);
+        const handler = async (parsedObjFile, config, mode = "render") => {
+            if (mode === "render") {
+                await this.#createProjectedImage(parsedObjFile, config);
+            } else if (mode === "adjust") {
+                // TODO
+            }
         };
 
         prepareObjFileUploading(handler, [...this.#shiftVectorControls, ...this.#rotationAngleControls]);
