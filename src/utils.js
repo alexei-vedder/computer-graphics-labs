@@ -1,6 +1,6 @@
 import {saveAs} from "file-saver";
 import OBJFile from "obj-file-parser";
-import {round} from "mathjs";
+import {ceil, min, round} from "mathjs";
 import {LabFactory} from "./lab-factory";
 
 export function createImage(name = "image", width = 200, height = 200) {
@@ -200,5 +200,17 @@ export function initTabs(defaultTabIndex = 0) {
         if (i === defaultTabIndex) {
             tabItem.onclick();
         }
+    }
+}
+
+export async function asyncForOf(array, callback, chunkSize = 100) {
+    let i = 0;
+    const chunksTotal = ceil(array.length / chunkSize);
+    for (let chunkNum = 1; chunkNum <= chunksTotal; ++chunkNum) {
+        setTimeout(() => {
+            for (; i < min(chunkSize * chunkNum, array.length); ++i) {
+                callback(array[i], i);
+            }
+        }, 1);
     }
 }

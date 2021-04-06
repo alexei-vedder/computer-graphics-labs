@@ -1,6 +1,7 @@
 import {abs, cos, cross, divide, dot, sin, sqrt, square} from "mathjs";
 import {Color} from "./models/color";
 import {Vertex} from "./models/vertex";
+import {asyncForOf} from "./utils";
 
 export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     lineDrawer.fill();
@@ -13,7 +14,7 @@ export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
 
 export function drawVertexImage(lineDrawer, vertices, transformer) {
     lineDrawer.fill();
-    vertices.forEach(v => {
+    asyncForOf(vertices, (v) => {
         const vertex = transformer.transform(new Vertex(v.x, -v.y, v.z));
         lineDrawer.setPixel(vertex.u, vertex.v);
     });
@@ -32,17 +33,23 @@ function findPolygonVertices(allVertices, face) {
 
 export function drawPolygonImage(lineDrawer, vertices, faces, transformer) {
     lineDrawer.fill();
-    for (let face of faces) {
+    asyncForOf(faces, (face) => {
         const polygonVertices = findPolygonVertices(vertices, face)
             .map(vertex => transformer.transform(vertex));
         lineDrawer
-            .drawPolygon(polygonVertices[0].u, polygonVertices[0].v, polygonVertices[1].u, polygonVertices[1].v, polygonVertices[2].u, polygonVertices[2].v);
-    }
+            .drawPolygon(
+                polygonVertices[0].u,
+                polygonVertices[0].v,
+                polygonVertices[1].u,
+                polygonVertices[1].v,
+                polygonVertices[2].u,
+                polygonVertices[2].v);
+    });
 }
 
 export function drawFilledPolygonImage(polygonFiller, vertices, faces, transformer) {
     polygonFiller.fill();
-    for (let face of faces) {
+    asyncForOf(faces, (face) => {
         const polygonVertices = findPolygonVertices(vertices, face)
             .map(vertex => transformer.transform(vertex));
         polygonFiller.fillPolygon(
@@ -50,7 +57,7 @@ export function drawFilledPolygonImage(polygonFiller, vertices, faces, transform
             polygonVertices[1],
             polygonVertices[2]
         );
-    }
+    });
 }
 
 function findCosineOfAngleOfIncidence(polygonVertices, lightDirection) {
@@ -74,8 +81,7 @@ function findCosineOfAngleOfIncidence(polygonVertices, lightDirection) {
 export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, faces, transformer, lightDirection = [0, 0, 1]) {
     polygonFiller.fill();
 
-    for (let face of faces) {
-
+    asyncForOf(faces, (face) => {
         const polygonVertices = findPolygonVertices(vertices, face)
             .map(vertex => transformer.transform(vertex));
 
@@ -92,5 +98,5 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller, vertices, fa
                     0)
             );
         }
-    }
+    });
 }
