@@ -78,7 +78,7 @@ export class Lab1 extends Lab {
     }
 
     async #createVertexImage(parsedObjFile, config) {
-        const vertexImage = createImage("Vertex Image", 1000, 1000);
+        const vertexImage = createImage("Vertex Image", config.imageSize, config.imageSize);
         const vertexImageCtx = vertexImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
         drawVertexImage(
@@ -89,7 +89,7 @@ export class Lab1 extends Lab {
     }
 
     async #createPolygonImage(parsedObjFile, config) {
-        const polygonImage = createImage("Polygon Image", 1000, 1000);
+        const polygonImage = createImage("Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
         drawPolygonImage(

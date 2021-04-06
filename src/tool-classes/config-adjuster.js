@@ -8,7 +8,7 @@ export class ConfigAdjuster {
         this.SCALING_COEFF = SCALING_COEFF;
     }
 
-    adjust(vertices, imageSize /* TODO move to config */) {
+    adjust(vertices) {
         throw new Error("No implementation for 'adjust' method");
     }
 
@@ -46,7 +46,7 @@ export class BasicConfigAdjuster extends ConfigAdjuster {
         super(config);
     }
 
-    adjust(vertices, imageSize) {
+    adjust(vertices) {
         const {xMax, xMin, yMax, yMin} = this.findExtremums(vertices);
 
         const xDispersion = abs(xMax - xMin),
@@ -56,7 +56,7 @@ export class BasicConfigAdjuster extends ConfigAdjuster {
             dy = (yMax + yMin) / 2;
 
         return {
-            scaling: this.SCALING_COEFF * imageSize / (max(xDispersion, yDispersion) + 2 * max(abs(dx), abs(dy)))
+            scaling: this.SCALING_COEFF * this.config.imageSize / (max(xDispersion, yDispersion) + 2 * max(abs(dx), abs(dy)))
         }
     }
 }
@@ -70,7 +70,7 @@ export class ProjectiveConfigAdjuster extends ConfigAdjuster {
     }
 
 
-    adjust(vertices, imageSize /* TODO move to config */) {
+    adjust(vertices) {
 
         let rotatedVertices = JSON.parse(JSON.stringify(vertices));
         rotatedVertices.forEach(v => this.transformer.rotate(v));
@@ -88,7 +88,7 @@ export class ProjectiveConfigAdjuster extends ConfigAdjuster {
         const shiftZ = this.DISTANCE * zDispersion - dz;
 
         return {
-            scaling: this.SCALING_COEFF * imageSize * shiftZ / max(xDispersion, yDispersion),
+            scaling: this.SCALING_COEFF * this.config.imageSize * shiftZ / max(xDispersion, yDispersion),
             shiftX: -dx,
             shiftY: -dy,
             shiftZ

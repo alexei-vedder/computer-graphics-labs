@@ -1,4 +1,4 @@
-import {cos, multiply, sin, transpose} from "mathjs";
+import {cos, multiply, round, sin, transpose} from "mathjs";
 import {Quaternion} from "quaternion";
 import {AbstractCoordTransformer} from "./coord-transformer";
 
@@ -13,8 +13,8 @@ export class AbstractProjectiveCoordTransformer extends AbstractCoordTransformer
         this.rotate(vertex);
 
         const intrinsic = [
-            [this.config.scaling, 0, this.config.displacementX],
-            [0, this.config.scaling, this.config.displacementY],
+            [this.config.scaling, 0, round(this.config.imageSize / 2)],
+            [0, this.config.scaling, round(this.config.imageSize / 2)],
             [0, 0, 1]
         ];
 

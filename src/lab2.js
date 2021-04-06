@@ -43,7 +43,7 @@ export class Lab2 extends Lab {
     }
 
     async #createFilledPolygonImage(parsedObjFile, config) {
-        const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
+        const polygonImage = createImage("Filled Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         drawFilledPolygonImage(
             new PolygonFiller(polygonImageCtx),
@@ -54,7 +54,7 @@ export class Lab2 extends Lab {
     }
 
     async #createLightSensitiveFilledPolygonImage(parsedObjFile, config) {
-        const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
+        const polygonImage = createImage("Filled Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         drawLightSensitiveFilledPolygonImage(
             new PolygonFiller(polygonImageCtx),
@@ -65,7 +65,7 @@ export class Lab2 extends Lab {
     }
 
     async #createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config) {
-        const polygonImage = createImage("Filled Polygon Image", 1000, 1000);
+        const polygonImage = createImage("Filled Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         drawLightSensitiveFilledPolygonImage(
             new ZBufferedPolygonFiller(polygonImageCtx),

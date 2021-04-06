@@ -73,7 +73,7 @@ export class Lab3 extends Lab {
     }
 
     async #createProjectedImage(parsedObjFile, config) {
-        const image = createImage("Projected Polygon Image", 1000, 1000);
+        const image = createImage("Projected Polygon Image", config.imageSize, config.imageSize);
         const imageCtx = image.getContext("2d");
         drawLightSensitiveFilledPolygonImage(
             new ZBufferedPolygonFiller(imageCtx),

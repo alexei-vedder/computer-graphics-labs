@@ -1,6 +1,6 @@
 import {round} from "mathjs";
 import OBJFile from "obj-file-parser";
-import {initObjFileUploadPanel, toggleLoader} from "./utils";
+import {toggleLoader} from "./utils";
 import {BasicConfigAdjuster, ProjectiveConfigAdjuster} from "./tool-classes/config-adjuster";
 import {Vertex} from "./models/vertex";
 
@@ -16,20 +16,12 @@ export class ObjFileHandler {
                 scaling: round(value)
             })
         }, {
-            id: "displacementX",
+            id: "imageSize",
             type: "number",
             value: 500,
-            label: "Displacement (x)",
+            label: "Image size",
             handle: (value) => ({
-                displacementX: round(value)
-            })
-        }, {
-            id: "displacementY",
-            type: "number",
-            value: 500,
-            label: "Displacement (y)",
-            handle: (value) => ({
-                displacementY: round(value)
+                imageSize: round(value)
             })
         }
     ];
@@ -40,7 +32,7 @@ export class ObjFileHandler {
         this.handle = handle;
         this.controls = this.defaultControls.concat(extraControls);
 
-        initObjFileUploadPanel(this.controls);
+        this.initObjFileUploadPanel();
 
         this.objFileInput = document.getElementById("obj-file-input");
         this.renderButton = document.getElementById("render-btn");
@@ -52,6 +44,30 @@ export class ObjFileHandler {
 
         this.autoAdjustButton.addEventListener("click", this.onAutoAdjust.bind(this));
         this.renderButton.addEventListener("click", this.onRender.bind(this));
+    }
+
+    initObjFileUploadPanel() {
+
+        const objFileUploadPanel = document.getElementById("obj-file-upload-panel");
+
+        if (objFileUploadPanel) {
+            objFileUploadPanel.parentNode.removeChild(objFileUploadPanel);
+        }
+
+        const controlsTemplates = this.controls.map(control => `<label for="${control.id}">${control.label}</label>
+                <input id="${control.id}" class="form-control" type="${control.type}" value="${control.value}"/>`);
+
+        document
+            .getElementById("main-container")
+            .insertAdjacentHTML("beforeend", `
+            <section id="obj-file-upload-panel">
+                <label for="obj-file-input">Add your .obj file</label>
+                <input id="obj-file-input" class="form-control" type="file"/>
+                ${controlsTemplates.join("")}
+                <button type="button" class="btn" id="auto-adjust-btn" disabled>Auto adjust</button>
+                <button type="button" class="btn btn-primary" id="render-btn" disabled>Render</button>
+            </section>
+        `)
     }
 
     onRender() {

@@ -21,30 +21,6 @@ export function createImage(name = "image", width = 200, height = 200) {
     return canvas;
 }
 
-export function initObjFileUploadPanel(controls) {
-
-    const objFileUploadPanel = document.getElementById("obj-file-upload-panel");
-
-    if (objFileUploadPanel) {
-        objFileUploadPanel.parentNode.removeChild(objFileUploadPanel);
-    }
-
-    const controlsTemplates = controls.map(control => `<label for="${control.id}">${control.label}</label>
-                <input id="${control.id}" class="form-control" type="${control.type}" value="${control.value}"/>`);
-
-    document
-        .getElementById("main-container")
-        .insertAdjacentHTML("beforeend", `
-            <section id="obj-file-upload-panel">
-                <label for="obj-file-input">Add your .obj file</label>
-                <input id="obj-file-input" class="form-control" type="file"/>
-                ${controlsTemplates.join("")}
-                <button type="button" class="btn" id="auto-adjust-btn" disabled>Auto adjust</button>
-                <button type="button" class="btn btn-primary" id="render-btn" disabled>Render</button>
-            </section>
-        `)
-}
-
 export function toggleLoader(enabled) {
     const loader = document.getElementById("loader")
     if (enabled) {
