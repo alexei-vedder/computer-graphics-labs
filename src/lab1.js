@@ -1,5 +1,5 @@
 import {Color} from "./models/color";
-import {createImage, prepareObjFileUploading} from "./utils";
+import {createImage} from "./utils";
 import {drawPolygonImage, drawStar, drawVertexImage} from "./drawing-fns";
 import {Paintbrush} from "./tool-classes/paintbrush";
 import {LineDrawerV1} from "./tool-classes/line-drawer-v1";
@@ -8,6 +8,7 @@ import {LineDrawerV3} from "./tool-classes/line-drawer-v3";
 import {LineDrawerV4} from "./tool-classes/line-drawer-v4";
 import {Lab} from "./lab";
 import {BasicCoordTransformer} from "./tool-classes/coord-transformer";
+import {ObjFileHandler} from "./obj-file-handler";
 
 
 export class Lab1 extends Lab {
@@ -100,20 +101,17 @@ export class Lab1 extends Lab {
     }
 
     run() {
-        const handler = async (parsedObjFile, config, mode = "render") => {
-            if (mode === "render") {
-                await this.#createVertexImage(parsedObjFile, config);
-                await this.#createPolygonImage(parsedObjFile, config);
-            } else if (mode === "adjust") {
-                // TODO
-            }
-        }
+        const handle = async (parsedObjFile, config) => {
+            await this.#createVertexImage(parsedObjFile, config);
+            await this.#createPolygonImage(parsedObjFile, config);
+        };
 
         this.#createBlackImage();
         this.#createWhiteImage();
         this.#createRedImage();
         this.#createGradientImage();
         this.#createStarImages();
-        prepareObjFileUploading(handler);
+
+        new ObjFileHandler(handle);
     }
 }

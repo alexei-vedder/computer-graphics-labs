@@ -1,15 +1,16 @@
 import {Lab} from "./lab";
-import {createImage, prepareObjFileUploading} from "./utils";
+import {createImage} from "./utils";
 import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
-import {drawLightSensitiveFilledPolygonImage} from "./drawing-fns";
-import {ProjectiveCoordTransformer} from "./tool-classes/coord-transformer";
+import {drawLightSensitiveFilledPolygonImage, findPolygonVertices} from "./drawing-fns";
 import {unit} from "mathjs";
+import {QuaternionDrivenCoordTransformer} from "./tool-classes/projective-coord-transformer";
+import {ObjFileHandler} from "./obj-file-handler";
 
 export class Lab3 extends Lab {
 
     #shiftVectorControls = [
         {
-            id: "shift-x",
+            id: "shiftX",
             type: "number",
             value: 0.005,
             label: "Shift (x)",
@@ -18,7 +19,7 @@ export class Lab3 extends Lab {
             })
         },
         {
-            id: "shift-y",
+            id: "shiftY",
             type: "number",
             value: 0.05,
             label: "Shift (y)",
@@ -27,7 +28,7 @@ export class Lab3 extends Lab {
             })
         },
         {
-            id: "shift-z",
+            id: "shiftZ",
             type: "number",
             value: 0.2,
             label: "Shift (z)",
@@ -78,20 +79,16 @@ export class Lab3 extends Lab {
             new ZBufferedPolygonFiller(imageCtx),
             parsedObjFile.models[0].vertices,
             parsedObjFile.models[0].faces,
-            new ProjectiveCoordTransformer(config)
+            new QuaternionDrivenCoordTransformer(config)
         );
     }
 
     run() {
-        const handler = async (parsedObjFile, config, mode = "render") => {
-            if (mode === "render") {
-                await this.#createProjectedImage(parsedObjFile, config);
-            } else if (mode === "adjust") {
-                // TODO
-            }
+        const handler = async (parsedObjFile, config) => {
+            await this.#createProjectedImage(parsedObjFile, config);
         };
 
-        prepareObjFileUploading(handler, [...this.#shiftVectorControls, ...this.#rotationAngleControls]);
+        new ObjFileHandler(handler, [...this.#shiftVectorControls, ...this.#rotationAngleControls])
     }
 
 }

@@ -1,10 +1,11 @@
-import {createImage, prepareObjFileUploading} from "./utils";
+import {createImage} from "./utils";
 import {drawFilledPolygonImage, drawLightSensitiveFilledPolygonImage} from "./drawing-fns";
 import {Vertex} from "./models/vertex";
 import {PolygonFiller} from "./tool-classes/polygon-filler";
 import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
 import {Lab} from "./lab";
 import {BasicCoordTransformer} from "./tool-classes/coord-transformer";
+import {ObjFileHandler} from "./obj-file-handler";
 
 export class Lab2 extends Lab {
 
@@ -75,17 +76,13 @@ export class Lab2 extends Lab {
     }
 
     run() {
-        const handler = async (parsedObjFile, config, mode = "render") => {
-            if (mode === "render") {
-                await this.#createFilledPolygonImage(parsedObjFile, config);
-                await this.#createLightSensitiveFilledPolygonImage(parsedObjFile, config);
-                await this.#createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config);
-            } else if (mode === "adjust") {
-                // TODO
-            }
+        const handle = async (parsedObjFile, config) => {
+            await this.#createFilledPolygonImage(parsedObjFile, config);
+            await this.#createLightSensitiveFilledPolygonImage(parsedObjFile, config);
+            await this.#createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config);
         }
 
         this.#createTriangleImage();
-        prepareObjFileUploading(handler);
+        new ObjFileHandler(handle);
     }
 }
