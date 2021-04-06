@@ -10,15 +10,6 @@ export class PolygonFiller extends Paintbrush {
         super(ctx, defaultBackgroundColor, defaultColor);
     }
 
-    /** a bit optimized version
-     * @override
-     */
-    fill(color = this.defaultBackgroundColor) {
-        this.ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`
-        this.ctx.fillRect(0, 0, this.imageData.width, this.imageData.height)
-        return this;
-    }
-
     fillPolygon(p0, p1, p2, color = Paintbrush.getRandomColor()) {
         const constrainingRect = this._findConstrainingRectangle(p0.u, p0.v, p1.u, p1.v, p2.u, p2.v);
         for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {

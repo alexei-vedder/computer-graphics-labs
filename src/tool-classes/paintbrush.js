@@ -18,12 +18,21 @@ export class Paintbrush {
         return this;
     }
 
-    fill(color = this.defaultBackgroundColor) {
+    /** Fills pixel by pixel, non-optimized version
+     fill(color = this.defaultBackgroundColor) {
         for (let y = 0; y < this.imageData.height; y++) {
             for (let x = 0; x < this.imageData.width; x++) {
                 this.setPixel(x, y, color);
             }
         }
+        return this;
+    }
+     */
+
+    /** optimized version */
+    fill(color = this.defaultBackgroundColor) {
+        this.ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`
+        this.ctx.fillRect(0, 0, this.imageData.width, this.imageData.height)
         return this;
     }
 

@@ -208,9 +208,21 @@ export async function asyncForOf(array, callback, chunkSize = 100) {
     const chunksTotal = ceil(array.length / chunkSize);
     for (let chunkNum = 1; chunkNum <= chunksTotal; ++chunkNum) {
         setTimeout(() => {
+
+            /* only for this project, remove if use this function in another one */
+            if (chunkNum === 1) {
+                toggleLoader(true);
+            }
+
             for (; i < min(chunkSize * chunkNum, array.length); ++i) {
                 callback(array[i], i);
             }
+
+            /* only for this project, remove if use this function in another one */
+            if (chunkNum === chunksTotal) {
+                toggleLoader(false);
+            }
+
         }, 1);
     }
 }
