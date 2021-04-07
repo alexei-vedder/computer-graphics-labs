@@ -1,10 +1,10 @@
 import {Lab} from "./lab";
-import {createImage} from "./utils";
-import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
-import {drawLightSensitiveFilledPolygonImage, findPolygonVertices} from "./drawing-fns";
+import {createImage} from "../utils";
+import {ZBufferedPolygonFiller} from "../tool-classes/z-buffered-polygon-filler";
+import {drawLightSensitiveFilledPolygonImage, findPolygonVertices} from "../drawing-fns";
 import {unit} from "mathjs";
-import {QuaternionDrivenCoordTransformer} from "./tool-classes/projective-coord-transformer";
-import {ObjFileHandler} from "./obj-file-handler";
+import {QuaternionDrivenCoordTransformer} from "../tool-classes/projective-coord-transformer";
+import {ObjFileHandler} from "../obj-file-handler";
 
 export class Lab3 extends Lab {
 

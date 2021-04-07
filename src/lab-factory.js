@@ -1,6 +1,6 @@
-import {Lab1} from "./lab1";
-import {Lab2} from "./lab2";
-import {Lab3} from "./lab3";
+import {Lab1} from "./labs/lab1";
+import {Lab2} from "./labs/lab2";
+import {Lab3} from "./labs/lab3";
 
 export class LabFactory {
 

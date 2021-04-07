@@ -1,11 +1,11 @@
-import {createImage} from "./utils";
-import {drawFilledPolygonImage, drawLightSensitiveFilledPolygonImage} from "./drawing-fns";
-import {Vertex} from "./models/vertex";
-import {PolygonFiller} from "./tool-classes/polygon-filler";
-import {ZBufferedPolygonFiller} from "./tool-classes/z-buffered-polygon-filler";
+import {createImage} from "../utils";
+import {drawFilledPolygonImage, drawLightSensitiveFilledPolygonImage} from "../drawing-fns";
+import {Vertex} from "../models/vertex";
+import {PolygonFiller} from "../tool-classes/polygon-filler";
+import {ZBufferedPolygonFiller} from "../tool-classes/z-buffered-polygon-filler";
 import {Lab} from "./lab";
-import {BasicCoordTransformer} from "./tool-classes/coord-transformer";
-import {ObjFileHandler} from "./obj-file-handler";
+import {BasicCoordTransformer} from "../tool-classes/coord-transformer";
+import {ObjFileHandler} from "../obj-file-handler";
 
 export class Lab2 extends Lab {
 

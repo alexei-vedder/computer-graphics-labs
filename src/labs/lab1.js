@@ -1,14 +1,14 @@
-import {Color} from "./models/color";
-import {createImage} from "./utils";
-import {drawPolygonImage, drawStar, drawVertexImage} from "./drawing-fns";
-import {Paintbrush} from "./tool-classes/paintbrush";
-import {LineDrawerV1} from "./tool-classes/line-drawer-v1";
-import {LineDrawerV2} from "./tool-classes/line-drawer-v2";
-import {LineDrawerV3} from "./tool-classes/line-drawer-v3";
-import {LineDrawerV4} from "./tool-classes/line-drawer-v4";
+import {Color} from "../models/color";
+import {createImage} from "../utils";
+import {drawPolygonImage, drawStar, drawVertexImage} from "../drawing-fns";
+import {Paintbrush} from "../tool-classes/paintbrush";
+import {LineDrawerV1} from "../tool-classes/line-drawer-v1";
+import {LineDrawerV2} from "../tool-classes/line-drawer-v2";
+import {LineDrawerV3} from "../tool-classes/line-drawer-v3";
+import {LineDrawerV4} from "../tool-classes/line-drawer-v4";
 import {Lab} from "./lab";
-import {BasicCoordTransformer} from "./tool-classes/coord-transformer";
-import {ObjFileHandler} from "./obj-file-handler";
+import {BasicCoordTransformer} from "../tool-classes/coord-transformer";
+import {ObjFileHandler} from "../obj-file-handler";
 
 
 export class Lab1 extends Lab {
