@@ -73,10 +73,8 @@ export class ObjFileHandler {
     onRender() {
         toggleLoader(true)
         setTimeout(() => {
-            this.handle(this.parsedObjFile, this.getConfig())
-                .then(() => {
-                    toggleLoader(false);
-                });
+            const images = this.handle(this.parsedObjFile, this.getConfig());
+            toggleLoader(false);
         }, 100);
     }
 

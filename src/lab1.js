@@ -14,7 +14,7 @@ import {ObjFileHandler} from "./obj-file-handler";
 export class Lab1 extends Lab {
 
     constructor() {
-       super();
+        super();
     }
 
     #createBlackImage() {
@@ -24,6 +24,7 @@ export class Lab1 extends Lab {
         paintbrush
             .fill()
             .grayscale();
+        return blackImage;
     }
 
     #createWhiteImage() {
@@ -33,6 +34,7 @@ export class Lab1 extends Lab {
         paintbrush
             .fill(new Color(255, 255, 255))
             .grayscale();
+        return whiteImage;
     }
 
     #createRedImage() {
@@ -41,6 +43,7 @@ export class Lab1 extends Lab {
         const paintbrush = new Paintbrush(redImageCtx);
         paintbrush
             .fill(new Color(255, 0, 0));
+        return redImage;
     }
 
     #createGradientImage() {
@@ -49,6 +52,7 @@ export class Lab1 extends Lab {
         const paintbrush = new Paintbrush(gradientImageCtx);
         paintbrush
             .gradient();
+        return gradientImage;
     }
 
     #createStarImages() {
@@ -75,9 +79,16 @@ export class Lab1 extends Lab {
 
         const lineDrawerV4 = new LineDrawerV4(starImage4Ctx);
         drawStar(lineDrawerV4);
+
+        return [
+            starImage1,
+            starImage2,
+            starImage3,
+            starImage4
+        ]
     }
 
-    async #createVertexImage(parsedObjFile, config) {
+    #createVertexImage(parsedObjFile, config) {
         const vertexImage = createImage("Vertex Image", config.imageSize, config.imageSize);
         const vertexImageCtx = vertexImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
@@ -86,9 +97,10 @@ export class Lab1 extends Lab {
             parsedObjFile.models[0].vertices,
             new BasicCoordTransformer(config)
         );
+        return vertexImage;
     }
 
-    async #createPolygonImage(parsedObjFile, config) {
+    #createPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
@@ -98,20 +110,21 @@ export class Lab1 extends Lab {
             parsedObjFile.models[0].faces,
             new BasicCoordTransformer(config)
         );
+        return polygonImage;
     }
 
     run() {
-        const handle = async (parsedObjFile, config) => {
-            await this.#createVertexImage(parsedObjFile, config);
-            await this.#createPolygonImage(parsedObjFile, config);
-        };
+        const handle = (parsedObjFile, config) => [
+            this.#createVertexImage(parsedObjFile, config),
+            this.#createPolygonImage(parsedObjFile, config)
+        ];
+
+        new ObjFileHandler(handle);
 
         this.#createBlackImage();
         this.#createWhiteImage();
         this.#createRedImage();
         this.#createGradientImage();
         this.#createStarImages();
-
-        new ObjFileHandler(handle);
     }
 }

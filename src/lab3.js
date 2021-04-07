@@ -72,7 +72,7 @@ export class Lab3 extends Lab {
         super();
     }
 
-    async #createProjectedImage(parsedObjFile, config) {
+    #createProjectedImage(parsedObjFile, config) {
         const image = createImage("Projected Polygon Image", config.imageSize, config.imageSize);
         const imageCtx = image.getContext("2d");
         drawLightSensitiveFilledPolygonImage(
@@ -81,12 +81,11 @@ export class Lab3 extends Lab {
             parsedObjFile.models[0].faces,
             new QuaternionDrivenCoordTransformer(config)
         );
+        return image;
     }
 
     run() {
-        const handler = async (parsedObjFile, config) => {
-            await this.#createProjectedImage(parsedObjFile, config);
-        };
+        const handler = (parsedObjFile, config) => [this.#createProjectedImage(parsedObjFile, config)];
 
         new ObjFileHandler(handler, [...this.#shiftVectorControls, ...this.#rotationAngleControls])
     }

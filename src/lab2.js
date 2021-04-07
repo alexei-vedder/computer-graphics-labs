@@ -39,10 +39,12 @@ export class Lab2 extends Lab {
                 new Vertex(300, 150),
                 new Vertex(450, 220),
                 new Vertex(300, 300)
-            )
+            );
+
+        return justTriangle;
     }
 
-    async #createFilledPolygonImage(parsedObjFile, config) {
+    #createFilledPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Filled Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         drawFilledPolygonImage(
@@ -51,9 +53,10 @@ export class Lab2 extends Lab {
             parsedObjFile.models[0].faces,
             new BasicCoordTransformer(config)
         );
+        return polygonImage;
     }
 
-    async #createLightSensitiveFilledPolygonImage(parsedObjFile, config) {
+    #createLightSensitiveFilledPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Filled Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         drawLightSensitiveFilledPolygonImage(
@@ -62,9 +65,10 @@ export class Lab2 extends Lab {
             parsedObjFile.models[0].faces,
             new BasicCoordTransformer(config)
         );
+        return polygonImage;
     }
 
-    async #createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config) {
+    #createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config) {
         const polygonImage = createImage("Filled Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         drawLightSensitiveFilledPolygonImage(
@@ -73,16 +77,18 @@ export class Lab2 extends Lab {
             parsedObjFile.models[0].faces,
             new BasicCoordTransformer(config)
         );
+        return polygonImage;
     }
 
     run() {
-        const handle = async (parsedObjFile, config) => {
-            await this.#createFilledPolygonImage(parsedObjFile, config);
-            await this.#createLightSensitiveFilledPolygonImage(parsedObjFile, config);
-            await this.#createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config);
-        }
+        const handle = (parsedObjFile, config) => [
+            this.#createFilledPolygonImage(parsedObjFile, config),
+            this.#createLightSensitiveFilledPolygonImage(parsedObjFile, config),
+            this.#createLightAndDistanceSensitiveFilledPolygonImage(parsedObjFile, config)
+        ];
+
+        new ObjFileHandler(handle);
 
         this.#createTriangleImage();
-        new ObjFileHandler(handle);
     }
 }

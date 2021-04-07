@@ -4,7 +4,7 @@ import {LabFactory} from "./lab-factory";
 
 export function createImage(name = "image", width = 200, height = 200) {
     const canvas = document.createElement("canvas");
-    canvas.className = "image";
+    canvas.classList.add("image");
     canvas.title = "Click to download";
     canvas.width = width;
     canvas.height = height;
@@ -57,6 +57,17 @@ function switchTabs(tab, callback) {
     callback();
 }
 
+function onTabClick() {
+    switchTabs(this.tabItem, () => {
+        const labInstance = LabFactory.getLabInstanceByTabName(this.tabItem.firstElementChild.innerText);
+        toggleLoader(true)
+        setTimeout(() => {
+            labInstance.run();
+            toggleLoader(false)
+        }, 100);
+    });
+}
+
 export function initTabs(defaultTabIndex = 0) {
 
     const getTabItemTemplate = (tabName) => `<li class="nav-item"><a class="nav-link">${tabName}</a></li>`;
@@ -76,16 +87,7 @@ export function initTabs(defaultTabIndex = 0) {
 
     for (let i = 0, tabItem = tabs.item(i); i < tabs.length; tabItem = tabs.item(++i)) {
 
-        tabItem.onclick = () => {
-            switchTabs(tabItem, () => {
-                const labInstance = LabFactory.getLabInstanceByTabName(tabItem.firstElementChild.innerText);
-                toggleLoader(true)
-                setTimeout(() => {
-                    labInstance.run();
-                    toggleLoader(false)
-                }, 100);
-            });
-        }
+        tabItem.onclick = onTabClick.bind({tabItem});
 
         if (i === defaultTabIndex) {
             tabItem.onclick();

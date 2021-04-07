@@ -48,15 +48,10 @@ export class BasicConfigAdjuster extends ConfigAdjuster {
 
     adjust(vertices) {
         const {xMax, xMin, yMax, yMin} = this.findExtremums(vertices);
-
-        const xDispersion = abs(xMax - xMin),
-            yDispersion = abs(yMax - yMin);
-
-        const dx = (xMax + xMin) / 2,
-            dy = (yMax + yMin) / 2;
+        const maximum = max(abs(xMax), abs(xMin), abs(yMax), abs(yMin));
 
         return {
-            scaling: this.SCALING_COEFF * this.config.imageSize / (max(xDispersion, yDispersion) + 2 * max(abs(dx), abs(dy)))
+            scaling: this.SCALING_COEFF * this.config.imageSize / (2 * maximum)
         }
     }
 }

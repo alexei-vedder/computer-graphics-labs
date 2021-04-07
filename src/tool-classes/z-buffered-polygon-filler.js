@@ -15,7 +15,7 @@ export class ZBufferedPolygonFiller extends PolygonFiller {
 
     /** @override */
     fillPolygon(p0, p1, p2, color = Paintbrush.getRandomColor()) {
-        const constrainingRect = this._findConstrainingRectangle(p0.u, p0.v, p1.u, p1.v, p2.u, p2.v);
+        const constrainingRect = this.findConstrainingRectangle(p0.u, p0.v, p1.u, p1.v, p2.u, p2.v);
         for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {
             for (let x = floor(constrainingRect.xMin); x <= ceil(constrainingRect.xMax); x++) {
                 if (x < this.zBuffer.length && y < this.zBuffer[0].length) {

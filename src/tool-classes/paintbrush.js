@@ -11,11 +11,13 @@ export class Paintbrush {
         this.defaultColor = defaultColor;
     }
 
-    setNewContext(ctx) {
-        this.ctx = ctx;
-        ctx.imageSmoothingEnabled = false;
-        this.imageData = ctx.getImageData(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-        return this;
+    static getRandomColor() {
+        const getRandomColorComponent = () => random(256);
+        return new Color(
+            getRandomColorComponent(),
+            getRandomColorComponent(),
+            getRandomColorComponent()
+        )
     }
 
     /** Fills pixel by pixel, non-optimized version
@@ -28,6 +30,13 @@ export class Paintbrush {
         return this;
     }
      */
+
+    setNewContext(ctx) {
+        this.ctx = ctx;
+        ctx.imageSmoothingEnabled = false;
+        this.imageData = ctx.getImageData(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+        return this;
+    }
 
     /** optimized version */
     fill(color = this.defaultBackgroundColor) {
@@ -68,14 +77,5 @@ export class Paintbrush {
         pixel.data[3] = color.a;
         this.ctx.putImageData(pixel, round(x), round(y));
         return this;
-    }
-
-    static getRandomColor() {
-        const getRandomColorComponent = () => random(256);
-        return new Color(
-            getRandomColorComponent(),
-            getRandomColorComponent(),
-            getRandomColorComponent()
-        )
     }
 }
