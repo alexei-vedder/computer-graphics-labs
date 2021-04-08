@@ -1,36 +1,17 @@
-import {round} from "mathjs";
 import OBJFile from "obj-file-parser";
 import {toggleLoader} from "./utils";
 import {BasicConfigAdjuster, ProjectiveConfigAdjuster} from "./tool-classes/config-adjuster";
 import {Vertex} from "./models/vertex";
+import {defaultControls} from "./models/controls";
+import {ObjModel} from "./models/obj-model";
 
 export class ObjFileHandler {
-
-    defaultControls = [
-        {
-            id: "scaling",
-            type: "number",
-            value: 1000,
-            label: "Scaling",
-            handle: (value) => ({
-                scaling: round(value)
-            })
-        }, {
-            id: "imageSize",
-            type: "number",
-            value: 500,
-            label: "Image size",
-            handle: (value) => ({
-                imageSize: round(value)
-            })
-        }
-    ];
 
     parsedObjFile;
 
     constructor(handle, extraControls = []) {
         this.handle = handle;
-        this.controls = this.defaultControls.concat(extraControls);
+        this.controls = defaultControls.concat(extraControls);
 
         this.initObjFileUploadPanel();
 
@@ -73,7 +54,7 @@ export class ObjFileHandler {
     onRender() {
         toggleLoader(true)
         setTimeout(() => {
-            const images = this.handle(this.parsedObjFile, this.getConfig());
+            const images = this.handle(this.convertFile(this.parsedObjFile), this.getConfig());
             toggleLoader(false);
         }, 100);
     }
@@ -81,9 +62,7 @@ export class ObjFileHandler {
     onAutoAdjust() {
         toggleLoader(true);
 
-        const config = this.getConfig(),
-            vertices = this.parsedObjFile.models[0].vertices
-                .map(v => new Vertex(v.x, -v.y, v.z));
+        const config = this.getConfig();
 
         let adjuster;
 
@@ -94,10 +73,10 @@ export class ObjFileHandler {
         }
 
         const adjustedConfig =
-            adjuster.adjust(vertices, 1000);
+            adjuster.adjust(this.convertFile(this.parsedObjFile).vertices);
 
         this.controls.forEach(control => {
-            if (adjustedConfig[control.id]) {
+            if (adjustedConfig[control.id] !== undefined && adjustedConfig[control.id] !== null) {
                 document.getElementById(control.id).value = adjustedConfig[control.id];
             }
         });
@@ -128,5 +107,16 @@ export class ObjFileHandler {
 
         this.autoAdjustButton.disabled = false;
         this.renderButton.disabled = false;
+    }
+
+    convertFile(parsedObjFile) {
+        const normals = parsedObjFile.models[0].vertexNormals.map(n => [n.x, n.y, n.z]);
+        const vertices = parsedObjFile.models[0].vertices.map(v => new Vertex(v.x, -1 * v.y, v.z));
+        const faces = parsedObjFile.models[0].faces.map(face => ({
+            vertices: face.vertices.map(faceVertex => Vertex.clone(vertices[faceVertex.vertexIndex - 1])),
+            normals: face.vertices.map(faceVertex => [...normals[faceVertex.vertexNormalIndex - 1]])
+        }));
+
+        return new ObjModel(faces, vertices, normals);
     }
 }

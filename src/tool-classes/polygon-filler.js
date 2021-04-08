@@ -27,16 +27,20 @@ export class PolygonFiller extends Paintbrush {
         }
     }
 
+    handlePolygonPixel(x, y, {p0, p1, p2}, color) {
+        if (x < this.imageData.width && y < this.imageData.height) {
+            const bcCoordinates = PolygonFiller.calcBarycentricCoordinates(x, y, p0.u, p0.v, p1.u, p1.v, p2.u, p2.v);
+            if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
+                this.setPixel(x, y, color);
+            }
+        }
+    }
+
     fillPolygon(p0, p1, p2, color = Paintbrush.getRandomColor()) {
         const constrainingRect = this.findConstrainingRectangle(p0.u, p0.v, p1.u, p1.v, p2.u, p2.v);
         for (let y = floor(constrainingRect.yMin); y <= ceil(constrainingRect.yMax); y++) {
             for (let x = floor(constrainingRect.xMin); x <= ceil(constrainingRect.xMax); x++) {
-                if (x < this.imageData.width && y < this.imageData.height) {
-                    const bcCoordinates = PolygonFiller.calcBarycentricCoordinates(x, y, p0.u, p0.v, p1.u, p1.v, p2.u, p2.v);
-                    if (0 < bcCoordinates.l0 && 0 < bcCoordinates.l1 && 0 < bcCoordinates.l2) {
-                        this.setPixel(x, y, color);
-                    }
-                }
+                this.handlePolygonPixel(x, y, {p0, p1, p2}, color);
             }
         }
         return this;

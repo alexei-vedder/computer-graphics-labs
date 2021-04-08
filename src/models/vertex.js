@@ -18,4 +18,12 @@ export class Vertex {
         this.v = v;
         this.w = w;
     }
+
+    static clone({x, y, z, u, v, w}) {
+        const vertex = new Vertex(x, y, z);
+        if (u || v || w) {
+            vertex.setTransformedCoordinates(u, v, w);
+        }
+        return vertex;
+    }
 }

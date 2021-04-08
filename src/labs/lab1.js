@@ -88,35 +88,34 @@ export class Lab1 extends Lab {
         ]
     }
 
-    #createVertexImage(parsedObjFile, config) {
+    #createVertexImage(objModel, config) {
         const vertexImage = createImage("Vertex Image", config.imageSize, config.imageSize);
         const vertexImageCtx = vertexImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(vertexImageCtx);
         drawVertexImage(
             lineDrawerV4,
-            parsedObjFile.models[0].vertices,
+            objModel,
             new BasicCoordTransformer(config)
         );
         return vertexImage;
     }
 
-    #createPolygonImage(parsedObjFile, config) {
+    #createPolygonImage(objModel, config) {
         const polygonImage = createImage("Polygon Image", config.imageSize, config.imageSize);
         const polygonImageCtx = polygonImage.getContext("2d");
         const lineDrawerV4 = new LineDrawerV4(polygonImageCtx);
         drawPolygonImage(
             lineDrawerV4,
-            parsedObjFile.models[0].vertices,
-            parsedObjFile.models[0].faces,
+            objModel,
             new BasicCoordTransformer(config)
         );
         return polygonImage;
     }
 
     run() {
-        const handle = (parsedObjFile, config) => [
-            this.#createVertexImage(parsedObjFile, config),
-            this.#createPolygonImage(parsedObjFile, config)
+        const handle = (objModel, config) => [
+            this.#createVertexImage(objModel, config),
+            this.#createPolygonImage(objModel, config)
         ];
 
         new ObjFileHandler(handle);

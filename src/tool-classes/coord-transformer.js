@@ -1,4 +1,4 @@
-import {round, unit} from "mathjs";
+import {unit} from "mathjs";
 
 export class AbstractCoordTransformer {
 
@@ -22,8 +22,8 @@ export class BasicCoordTransformer extends AbstractCoordTransformer {
 
     transform(vertex) {
         vertex.setTransformedCoordinates(
-            this.config.scaling * vertex.x + round(this.config.imageSize / 2),
-            this.config.scaling * vertex.y + round(this.config.imageSize / 2),
+            this.config.scaling * vertex.x + this.config.imageSize / 2,
+            this.config.scaling * vertex.y + this.config.imageSize / 2,
             this.config.scaling * vertex.z
         );
         return vertex;
