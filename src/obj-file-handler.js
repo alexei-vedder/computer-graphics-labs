@@ -55,7 +55,7 @@ export class ObjFileHandler {
     onRender() {
         toggleLoader(true)
         setTimeout(() => {
-            const images = this.handle(this.objModel, this.getConfig());
+            const images = this.handle(ObjModel.clone(this.objModel), this.getConfig());
             toggleLoader(false);
         }, 100);
     }
@@ -67,7 +67,7 @@ export class ObjFileHandler {
 
         let adjuster;
 
-        if (config.shiftX && config.shiftY && config.shiftZ) {
+        if (config.shiftX !== undefined && config.shiftY !== undefined && config.shiftZ !== undefined) {
             adjuster = new ProjectiveConfigAdjuster(config);
         } else {
             adjuster = new BasicConfigAdjuster(config);

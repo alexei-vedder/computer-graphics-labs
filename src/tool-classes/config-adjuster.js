@@ -80,13 +80,13 @@ export class ProjectiveConfigAdjuster extends ConfigAdjuster {
             dy = (yMax + yMin) / 2,
             dz = (zMax + zMin) / 2;
 
-        const shiftZ = this.DISTANCE * zDispersion - dz;
+        const shiftZ = this.DISTANCE * zDispersion;
 
         return {
             scaling: this.SCALING_COEFF * this.config.imageSize * shiftZ / max(xDispersion, yDispersion),
             shiftX: -dx,
             shiftY: -dy,
-            shiftZ
+            shiftZ: shiftZ - dz
         };
     }
 }
