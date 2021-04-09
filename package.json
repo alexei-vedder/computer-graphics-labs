@@ -1,6 +1,6 @@
 {
 	"name": "computer-graphics-labs",
-	"version": "3.3.0",
+	"version": "4.0.0",
 	"scripts": {
 		"serve": "parcel ./src/index.html --port=4321 --open",
 		"build": "parcel build ./src/index.html",
