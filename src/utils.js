@@ -1,5 +1,5 @@
 import {saveAs} from "file-saver";
-import {ceil, min} from "mathjs";
+import {ceil, cross, divide, dot, min, sqrt, square} from "mathjs";
 import {LabFactory} from "./lab-factory";
 
 export function createImage(name = "image", width = 200, height = 200) {
@@ -117,4 +117,35 @@ export async function asyncForOf(array, callback, chunkSize = 100) {
 
         }, 1);
     }
+}
+
+/**
+ * @param polygonVertices {Vertex[]}
+ * @return {[number, number, number]}
+ */
+export function findNormal(polygonVertices) {
+    return cross(
+        [
+            polygonVertices[1].x - polygonVertices[0].x,
+            polygonVertices[1].y - polygonVertices[0].y,
+            polygonVertices[1].z - polygonVertices[0].z
+        ], [
+            polygonVertices[1].x - polygonVertices[2].x,
+            polygonVertices[1].y - polygonVertices[2].y,
+            polygonVertices[1].z - polygonVertices[2].z
+        ]
+    );
+}
+
+/**
+ * @param normal {[number, number, number]}
+ * @param lightDirection {[number, number, number]}
+ * @return {number}
+ */
+export function findCosineOfAngleOfIncidence(normal, lightDirection) {
+    return divide(
+        dot(normal, lightDirection),
+        sqrt(square(normal[0]) + square(normal[1]) + square(normal[2]))
+        * sqrt(square(lightDirection[0]) + square(lightDirection[1]) + square(lightDirection[2]))
+    );
 }

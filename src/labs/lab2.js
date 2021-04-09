@@ -20,26 +20,26 @@ export class Lab2 extends Lab {
 
         polygonFiller
             .fill()
-            .fillPolygon(
+            .fillPolygon([
                 new Vertex(10, 10),
                 new Vertex(300, 300),
                 new Vertex(100, 450)
-            )
-            .fillPolygon(
+            ])
+            .fillPolygon([
                 new Vertex(10, 10),
                 new Vertex(100, -300),
                 new Vertex(300, 300)
-            )
-            .fillPolygon(
+            ])
+            .fillPolygon([
                 new Vertex(300, 300),
                 new Vertex(800, 100),
                 new Vertex(400, 500)
-            )
-            .fillPolygon(
+            ])
+            .fillPolygon([
                 new Vertex(300, 150),
                 new Vertex(450, 220),
                 new Vertex(300, 300)
-            );
+            ]);
 
         return justTriangle;
     }

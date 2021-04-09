@@ -1,6 +1,6 @@
-import {abs, cos, cross, divide, dot, sin, sqrt, square} from "mathjs";
+import {abs, cos, sin} from "mathjs";
 import {Color} from "./models/color";
-import {asyncForOf} from "./utils";
+import {asyncForOf, findCosineOfAngleOfIncidence, findNormal} from "./utils";
 
 export function drawStar(lineDrawer, x0 = 100, y0 = 100, length = 95) {
     lineDrawer.fill();
@@ -40,34 +40,8 @@ export function drawFilledPolygonImage(polygonFiller, {faces}, transformer) {
     asyncForOf(faces, (face) => {
         const polygonVertices = face.vertices.map(vertex => transformer.transform(vertex));
 
-        polygonFiller.fillPolygon(
-            polygonVertices[0],
-            polygonVertices[1],
-            polygonVertices[2]
-        );
+        polygonFiller.fillPolygon(polygonVertices);
     });
-}
-
-function findNormal(polygonVertices) {
-    return cross(
-        [
-            polygonVertices[1].x - polygonVertices[0].x,
-            polygonVertices[1].y - polygonVertices[0].y,
-            polygonVertices[1].z - polygonVertices[0].z
-        ], [
-            polygonVertices[1].x - polygonVertices[2].x,
-            polygonVertices[1].y - polygonVertices[2].y,
-            polygonVertices[1].z - polygonVertices[2].z
-        ]
-    );
-}
-
-function findCosineOfAngleOfIncidence(normal, lightDirection) {
-    return divide(
-        dot(normal, lightDirection),
-        sqrt(square(normal[0]) + square(normal[1]) + square(normal[2]))
-        * sqrt(square(lightDirection[0]) + square(lightDirection[1]) + square(lightDirection[2]))
-    );
 }
 
 export function drawLightSensitiveFilledPolygonImage(polygonFiller,
@@ -81,17 +55,15 @@ export function drawLightSensitiveFilledPolygonImage(polygonFiller,
 
         const cosineOfAngleOfIncidence = findCosineOfAngleOfIncidence(findNormal(polygonVertices), lightDirection);
 
-        if (cosineOfAngleOfIncidence < 0) {
-            polygonFiller.fillPolygon(
-                polygonVertices[0],
-                polygonVertices[1],
-                polygonVertices[2],
-                new Color(
-                    80 * abs(cosineOfAngleOfIncidence),
-                    255 * abs(cosineOfAngleOfIncidence),
-                    0)
-            );
+        if (0 <= cosineOfAngleOfIncidence) {
+            return;
         }
+
+        polygonFiller.fillPolygon(polygonVertices, () => new Color(
+            80 * abs(cosineOfAngleOfIncidence),
+            255 * abs(cosineOfAngleOfIncidence),
+            0)
+        );
     });
 }
 
@@ -99,9 +71,31 @@ export function drawGouraudShadedFilledPolygonImage(polygonFiller,
                                                     {faces},
                                                     transformer,
                                                     lightDirection = [0, 0, 1]) {
+    polygonFiller.fill();
 
-    const cosinesOfAngleOfIncidence = vertices
-        .map(v => findCosineOfAngleOfIncidence(v.normal, lightDirection));
+    asyncForOf(faces, (face) => {
 
+        const polygonVertices = face.vertices.map(vertex => transformer.transform(vertex));
+        const polygonNormals = face.normals;
+        const colorFn = (bcCoords) => {
+            const cosine0 = findCosineOfAngleOfIncidence(polygonNormals[0], lightDirection);
+            const cosine1 = findCosineOfAngleOfIncidence(polygonNormals[1], lightDirection);
+            const cosine2 = findCosineOfAngleOfIncidence(polygonNormals[2], lightDirection);
+            const colorCoeff = abs(bcCoords.l0 * cosine0 + bcCoords.l1 * cosine1 + bcCoords.l2 * cosine2);
+            return new Color(
+                80 * colorCoeff,
+                255 * colorCoeff,
+                0
+            )
+        };
+
+        const cosineOfAngleOfIncidence = findCosineOfAngleOfIncidence(findNormal(polygonVertices), lightDirection);
+
+        if (0 <= cosineOfAngleOfIncidence) {
+            return;
+        }
+
+        polygonFiller.fillPolygon([...polygonVertices, ...polygonNormals], colorFn);
+    });
 
 }

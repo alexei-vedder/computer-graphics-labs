@@ -1,13 +1,14 @@
 import OBJFile from "obj-file-parser";
-import {toggleLoader} from "./utils";
+import {findNormal, toggleLoader} from "./utils";
 import {BasicConfigAdjuster, ProjectiveConfigAdjuster} from "./tool-classes/config-adjuster";
 import {Vertex} from "./models/vertex";
 import {defaultControls} from "./models/controls";
 import {ObjModel} from "./models/obj-model";
+import {add} from "mathjs";
 
 export class ObjFileHandler {
 
-    parsedObjFile;
+    objModel;
 
     constructor(handle, extraControls = []) {
         this.handle = handle;
@@ -54,7 +55,7 @@ export class ObjFileHandler {
     onRender() {
         toggleLoader(true)
         setTimeout(() => {
-            const images = this.handle(this.convertFile(this.parsedObjFile), this.getConfig());
+            const images = this.handle(this.objModel, this.getConfig());
             toggleLoader(false);
         }, 100);
     }
@@ -73,7 +74,7 @@ export class ObjFileHandler {
         }
 
         const adjustedConfig =
-            adjuster.adjust(this.convertFile(this.parsedObjFile).vertices);
+            adjuster.adjust(this.objModel.vertices);
 
         this.controls.forEach(control => {
             if (adjustedConfig[control.id] !== undefined && adjustedConfig[control.id] !== null) {
@@ -103,10 +104,29 @@ export class ObjFileHandler {
 
     onFileLoad(fileLoadedEvent) {
         const fileContent = fileLoadedEvent.target.result;
-        this.parsedObjFile = new OBJFile(fileContent).parse();
 
-        this.autoAdjustButton.disabled = false;
-        this.renderButton.disabled = false;
+        toggleLoader(true);
+        setTimeout(() => {
+            const parsedObjFile = new OBJFile(fileContent).parse();
+            this.objModel = this.convertFile(parsedObjFile);
+
+            this.autoAdjustButton.disabled = false;
+            this.renderButton.disabled = false;
+            toggleLoader(false);
+        }, 100);
+
+    }
+
+    findFaceVertexNormals(roughTargetFace, roughFaces, vertices) {
+        const targetFaceVertexIndexes = roughTargetFace.vertices.map(v => v.vertexIndex);
+        return targetFaceVertexIndexes.map(vIndex => {
+            const adjacentFaces = roughFaces.filter(f => f.vertices.map(v => v.vertexIndex).includes(vIndex));
+            const adjacentFaceNormals = adjacentFaces.map(f => findNormal(f.vertices.map(v => Vertex.clone(vertices[v.vertexIndex - 1]))));
+            const avgNormal = adjacentFaceNormals
+                .reduce((result, normal) => add(result, normal), [0, 0, 0])
+                .map(ni => ni / adjacentFaceNormals.length);
+            return avgNormal;
+        })
     }
 
     convertFile(parsedObjFile) {
@@ -114,7 +134,8 @@ export class ObjFileHandler {
         const vertices = parsedObjFile.models[0].vertices.map(v => new Vertex(v.x, -1 * v.y, v.z));
         const faces = parsedObjFile.models[0].faces.map(face => ({
             vertices: face.vertices.map(faceVertex => Vertex.clone(vertices[faceVertex.vertexIndex - 1])),
-            normals: face.vertices.map(faceVertex => [...normals[faceVertex.vertexNormalIndex - 1]])
+            normals: normals.length ? face.vertices.map(faceVertex => [...normals[faceVertex.vertexNormalIndex - 1]])
+                : this.findFaceVertexNormals(face, parsedObjFile.models[0].faces, parsedObjFile.models[0].vertices)
         }));
 
         return new ObjModel(faces, vertices, normals);
