@@ -9,9 +9,9 @@ export class AbstractProjectiveCoordTransformer extends AbstractCoordTransformer
         super(config);
     }
 
-    transform(vertex) {
+    transform(v) {
 
-        this.rotate(vertex);
+        const vertex = this.rotate(v);
 
         const intrinsic = [
             [this.config.scaling, 0, round(this.config.imageSize / 2)],
@@ -40,8 +40,7 @@ export class AbstractProjectiveCoordTransformer extends AbstractCoordTransformer
     }
 
     rotateNormal(normal) {
-        const v = new Vertex(normal[0], normal[1], normal[2]);
-        this.rotate(v);
+        const v = this.rotate(new Vertex(normal[0], normal[1], normal[2]));
         return [v.x, v.y, v.z];
     }
 
@@ -80,7 +79,11 @@ export class ProjectiveCoordTransformer extends AbstractProjectiveCoordTransform
 
         const rotationMatrix = multiply(multiply(xRotationMatrix, yRotationMatrix), zRotationMatrix);
 
-        [vertex.x, vertex.y, vertex.z] = transpose(multiply(rotationMatrix, [[vertex.x], [vertex.y], [vertex.z]])).flat();
+        const vertexCopy = Vertex.clone(vertex);
+
+        [vertexCopy.x, vertexCopy.y, vertexCopy.z] = transpose(multiply(rotationMatrix, [[vertex.x], [vertex.y], [vertex.z]])).flat();
+
+        return vertexCopy;
     }
 }
 
@@ -93,7 +96,9 @@ export class QuaternionDrivenCoordTransformer extends AbstractProjectiveCoordTra
     rotate(vertex) {
         let {alpha, beta, gamma} = this.config;
         const quaternion = Quaternion.fromEuler(gamma.value, alpha.value, beta.value);
-        [vertex.x, vertex.y, vertex.z] = quaternion.rotateVector([vertex.x, vertex.y, vertex.z]);
+        const vertexCopy = Vertex.clone(vertex);
+        [vertexCopy.x, vertexCopy.y, vertexCopy.z] = quaternion.rotateVector([vertex.x, vertex.y, vertex.z]);
+        return vertexCopy;
     }
 
 }

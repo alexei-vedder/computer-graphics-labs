@@ -67,8 +67,7 @@ export class ProjectiveConfigAdjuster extends ConfigAdjuster {
 
     adjust(vertices) {
 
-        let rotatedVertices = JSON.parse(JSON.stringify(vertices));
-        rotatedVertices.forEach(v => this.transformer.rotate(v));
+        const rotatedVertices = vertices.map(v => this.transformer.rotate(v));
 
         const {xMax, xMin, yMax, yMin, zMax, zMin} = this.findExtremums(rotatedVertices);
 
