@@ -1,6 +1,7 @@
 import {cos, multiply, round, sin, transpose} from "mathjs";
 import {Quaternion} from "quaternion";
 import {AbstractCoordTransformer} from "./coord-transformer";
+import {Vertex} from "../models/vertex";
 
 export class AbstractProjectiveCoordTransformer extends AbstractCoordTransformer {
 
@@ -36,6 +37,12 @@ export class AbstractProjectiveCoordTransformer extends AbstractCoordTransformer
         vertex.setTransformedCoordinates(transformedCoords[0], transformedCoords[1], transformedCoords[2]);
 
         return vertex;
+    }
+
+    rotateNormal(normal) {
+        const v = new Vertex(normal[0], normal[1], normal[2]);
+        this.rotate(v);
+        return [v.x, v.y, v.z];
     }
 
     rotate(vertex) {

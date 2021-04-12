@@ -76,7 +76,7 @@ export function drawGouraudShadedFilledPolygonImage(polygonFiller,
     asyncForOf(faces, (face) => {
 
         const polygonVertices = face.vertices.map(vertex => transformer.transform(vertex));
-        const polygonNormals = face.normals;
+        const polygonNormals = face.normals.map(normal => transformer.rotateNormal(normal));
         const colorFn = (bcCoords) => {
             const cosine0 = findCosineOfAngleOfIncidence(polygonNormals[0], lightDirection);
             const cosine1 = findCosineOfAngleOfIncidence(polygonNormals[1], lightDirection);
