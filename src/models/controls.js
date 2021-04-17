@@ -24,7 +24,7 @@ export const shiftVectorControls = [
     {
         id: "shiftX",
         type: "number",
-        value: 0.005,
+        value: 0,
         label: "Shift (x)",
         handle: (value) => ({
             shiftX: Number.parseFloat(value)
@@ -33,7 +33,7 @@ export const shiftVectorControls = [
     {
         id: "shiftY",
         type: "number",
-        value: 0.05,
+        value: 0,
         label: "Shift (y)",
         handle: (value) => ({
             shiftY: Number.parseFloat(value)
@@ -42,7 +42,7 @@ export const shiftVectorControls = [
     {
         id: "shiftZ",
         type: "number",
-        value: 0.2,
+        value: 0,
         label: "Shift (z)",
         handle: (value) => ({
             shiftZ: Number.parseFloat(value)

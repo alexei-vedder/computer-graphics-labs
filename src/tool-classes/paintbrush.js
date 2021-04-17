@@ -3,6 +3,11 @@ import {random, round} from "mathjs";
 
 export class Paintbrush {
 
+    ctx;
+    imageData;
+    defaultColor;
+    defaultBackgroundColor;
+
     constructor(ctx,
                 defaultBackgroundColor = new Color(0, 0, 0),
                 defaultColor = new Color(255, 255, 255)) {
